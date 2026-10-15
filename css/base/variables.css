@@ -1,0 +1,20 @@
+:root {
+  --bg: #0b0b1a;                     /* Warna latar belakang utama */
+  --bg-menu: #0e1124;                /* Warna latar belakang menu mobile dropdown */
+  --panel: rgba(20, 24, 44, 0.85);   /* Panel film semi-transparan */
+  --accent: #4a6ee0;                 /* Biru aksen */
+  --danger: #d9262c;                 /* Merah aksen / tombol trailer / bookmark aktif */
+  --star: #f5c518;                   /* Kuning bintang rating */
+  --text: #ffffff;                   /* Warna teks utama */
+  --border: rgba(255, 255, 255, 0.6);/* Border elemen umum */
+  --line: rgba(255, 255, 255, 0.7);  /* Garis pemisah */
+  --card: rgba(10, 12, 28, 0.9);     /* Background kartu review */
+  --font: "Noto Serif", Georgia, serif;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --transition-fast: 180ms ease;
+  --transition-base: 240ms ease;
+  --shadow-accent: 0 10px 24px rgba(74, 110, 224, 0.2);
+  --shadow-surface: 0 14px 34px rgba(0, 0, 0, 0.24);
+}

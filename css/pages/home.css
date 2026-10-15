@@ -1,0 +1,182 @@
+/* Navbar khusus di Home (Desktop): melayang di atas gambar hero */
+@media (min-width: 901px) {
+  .navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 22px 48px;
+  }
+}
+
+/* ===== HERO / BANNER FILM ===== */
+.hero {
+  position: relative;
+  height: 460px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 80px 28px;
+
+  /* Latar berlapis: gradasi gelap di atas, gambar film di bawahnya */
+  background:
+    linear-gradient(to bottom, rgba(11, 11, 26, 0.5) 0%, rgba(11, 11, 26, 0.12) 36%, rgba(11, 11, 26, 0.72) 76%, var(--bg) 100%),
+    var(--hero-bg, #111) center / cover no-repeat;
+}
+
+.hero-info {
+  max-width: 620px;
+}
+
+.hero-info h1 {
+  font-size: 44px;
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.hero-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+}
+
+.hero-buttons button {
+  height: 38px;
+  padding: 0 22px;
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform var(--transition-fast), background-color var(--transition-fast),
+    border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hero-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-trailer {
+  background: var(--danger);
+  border: none;
+}
+
+.btn-watchlist {
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.btn-watchlist.active {
+  background: #e50914;
+  border-color: #e50914;
+}
+
+.btn-trailer:focus-visible,
+.btn-watchlist:focus-visible,
+.arrow:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Panah Hero Slider */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.arrow-left { left: 24px; }
+.arrow-right { right: 24px; }
+
+.arrow:hover {
+  color: var(--accent);
+}
+
+/* ===== DAFTAR FILM HOME ===== */
+.movies {
+  padding: 24px 48px 48px;
+}
+
+.section-title {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+/* Grid khusus Home: 7 poster per baris pada layar besar */
+.movies .movie-grid {
+  grid-template-columns: repeat(7, 1fr);
+  gap: 16px;
+}
+
+/* ===== RESPONSIF HOME ===== */
+@media (max-width: 1100px) {
+  .movies .movie-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    height: auto;
+    min-height: 420px;
+    padding: 34px 20px 26px;
+  }
+  .hero-info h1 {
+    font-size: 28px;
+  }
+  .arrow {
+    display: none;
+  }
+  .movies {
+    padding: 20px;
+  }
+  .movies .movie-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: 450px;
+  }
+
+  .hero-buttons {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .movies .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-buttons button {
+    transition: none;
+  }
+}

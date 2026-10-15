@@ -1,53 +1,25 @@
+/* ==========================================================================
+   HALAMAN: DETAIL FILM / SERIES (detail.html)
+   ========================================================================== */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;   
-}
-
-:root {
-  --bg: #0b0b1a;
-  --accent: #4a6ee0;                 /* biru aksen */
-  --star: #f5c518;                   /* kuning bintang */
-  --text: #ffffff;
-  --line: rgba(255, 255, 255, 0.7);  /* garis pemisah antar bagian */
-  --card: rgba(10, 12, 28, 0.9);     /* latar kartu review */
-  --font: "Noto Serif", Georgia, serif;
-}
-
-
-/* 2. BODY & HALAMAN (BACKGROUND) */
-
-body {
-  font-family: var(--font);
-  color: var(--text);
-  background: var(--bg);
-}
-
-/* .page = pembungkus seluruh halaman */
+/* Pembungkus halaman dengan latar backdrop dinamis */
 .page {
   min-height: 100vh;
   padding: 24px 48px 48px;
-
-  /* Latar berlapis: lapisan gelap di atas, gambar backdrop film di bawahnya.
-     --detail-bg diisi oleh JavaScript (gambar backdrop film yang dibuka). */
   background:
     linear-gradient(rgba(5, 8, 20, 0.82), rgba(5, 8, 20, 0.92)),
     var(--detail-bg, linear-gradient(180deg, #1b2440, #0b0b1a)) center / cover fixed no-repeat;
 }
 
-
-/* 3. BAGIAN ATAS 
-      Isi: tombol kembali | poster | judul + info + tombol */
-
+/* ===== BAGIAN HEADER DETAIL ===== */
 .detail-header {
-  display: flex;                /* tombol, poster, info berjajar menyamping */
-  align-items: flex-start;      /* rata ke atas */
+  display: flex;
+  align-items: flex-start;
   gap: 24px;
   padding-bottom: 24px;
 }
 
-/* Tombol panah kembali */
+/* Tombol Kembali */
 .btn-back {
   background: transparent;
   border: none;
@@ -55,51 +27,48 @@ body {
   font-size: 26px;
   cursor: pointer;
   margin-top: 6px;
+  transition: color var(--transition-fast), transform var(--transition-fast);
 }
 
 .btn-back:hover {
   color: var(--accent);
+  transform: translateX(-2px);
 }
 
-/* Poster */
+/* Poster Film */
 .poster {
   width: 110px;
-  aspect-ratio: 2 / 3;          /* proporsi poster */
+  aspect-ratio: 2 / 3;
   object-fit: cover;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: #222;
-  flex-shrink: 0;               /* ukuran poster tidak boleh mengecil */
+  flex-shrink: 0;
 }
 
-/* Judul */
+/* Info Detail */
 .detail-info h1 {
   font-size: 32px;
   margin-top: 4px;
   margin-bottom: 14px;
 }
 
-
-/* Baris: tahun | genre | durasi */
 .meta {
   font-size: 15px;
   margin-bottom: 14px;
 }
 
-/* Rating */
-.rating {
+.detail-info .rating {
+  position: static; /* override absolute dari card.css */
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 15px;
   margin-bottom: 18px;
+  text-shadow: none;
 }
 
-.star {
-  color: var(--star);
-}
-
-/* Tombol Trailer & WatchList */
+/* Tombol Aksi (Trailer & Watchlist) */
 .buttons {
   display: flex;
   gap: 14px;
@@ -117,26 +86,34 @@ body {
   font-weight: 700;
   font-size: 14px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast),
+    transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .btn-outline:hover {
   background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-accent);
 }
 
-/* Saat film sudah ada di watchlist */
 .btn-outline.active {
   background: #e50914;
   border-color: #e50914;
 }
 
+.btn-back:focus-visible,
+.btn-outline:focus-visible,
+.btn-next:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
 
-/* 4. BAGIAN UMUM  (<section class="section">) */
-
+/* ===== SECTION UMUM ===== */
 .section {
-  border-top: 1px solid var(--line);   /* garis pemisah di atas tiap bagian */
+  border-top: 1px solid var(--line);
   padding: 18px 0 22px;
 }
 
@@ -146,19 +123,14 @@ body {
   margin-bottom: 12px;
 }
 
-
-/* 5. SINOPSIS */
-
+/* ===== SINOPSIS ===== */
 .overview {
   font-size: 14px;
   line-height: 1.7;
   max-width: 1000px;
 }
 
-
-/* 6. CAST & CHARACTERS */
-
-
+/* ===== PEMAIN (CAST) ===== */
 .cast-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -173,8 +145,8 @@ body {
   display: block;
   width: 90px;
   height: 120px;
-  margin: 0 auto 8px;           /* foto di tengah kolom */
-  object-fit: cover;            /* foto menutupi kotak tanpa gepeng */
+  margin: 0 auto 8px;
+  object-fit: cover;
   border: 1px solid var(--line);
 }
 
@@ -188,37 +160,32 @@ body {
   margin-top: 2px;
 }
 
-
-/* 7. REVIEWS & COMMENTS */
-
-/* Pembungkus: daftar review + tombol panah di kanan */
+/* ===== REVIEWS & COMMENTS ===== */
 .reviews-wrap {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-/* Daftar review: berjajar menyamping dan bisa digeser (scroll) */
 .reviews {
   flex: 1;
   display: flex;
   gap: 20px;
-  overflow-x: auto;              /* scroll horizontal jika melebihi lebar */
-  scroll-snap-type: x mandatory; /* berhenti pas di tiap kartu */
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
   padding-bottom: 6px;
 }
 
-/* Kartu satu review */
 .review-card {
-  flex: 0 0 420px;               /* lebar tetap 420px, tidak mengecil */
+  flex: 0 0 420px;
   scroll-snap-align: start;
   padding: 14px 16px;
   background: var(--card);
   border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-surface);
 }
 
-/* Baris atas: ikon, nama, rating */
 .review-head {
   display: flex;
   align-items: center;
@@ -235,7 +202,6 @@ body {
   color: var(--star);
 }
 
-/* Isi review: dibatasi 6 baris, sisanya dipotong dengan "..." */
 .review-text {
   font-size: 12px;
   line-height: 1.6;
@@ -245,7 +211,6 @@ body {
   overflow: hidden;
 }
 
-/* Tombol panah geser review */
 .btn-next {
   background: transparent;
   border: none;
@@ -258,24 +223,41 @@ body {
   color: var(--accent);
 }
 
-/* Pesan jika data kosong */
-.empty {
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-
-/* 8. RESPONSIF */
+/* ===== RESPONSIF DETAIL ===== */
 @media (max-width: 900px) {
-  .page { padding: 20px; }
-  .cast-grid { grid-template-columns: repeat(3, 1fr); }
-  .review-card { flex-basis: 320px; }
+  .page {
+    padding: 20px;
+  }
+  .cast-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .review-card {
+    flex-basis: 320px;
+  }
 }
 
 @media (max-width: 560px) {
-  .detail-header { flex-wrap: wrap; }
-  .detail-info h1 { font-size: 26px; }
-  .cast-grid { grid-template-columns: repeat(2, 1fr); }
-  .review-card { flex-basis: 260px; }
+  .detail-header {
+    flex-wrap: wrap;
+  }
+  .detail-info h1 {
+    font-size: 26px;
+  }
+  .cast-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .review-card {
+    flex-basis: min(260px, calc(100vw - 64px));
+  }
+
+  .buttons {
+    flex-wrap: wrap;
+  }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .btn-back,
+  .btn-outline {
+    transition: none;
+  }
+}
