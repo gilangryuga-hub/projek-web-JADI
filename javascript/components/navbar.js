@@ -8,7 +8,9 @@ function initNavbar() {
   const toggleBtn = document.getElementById("nav-toggle");
   const menu = document.getElementById("nav-menu") || document.querySelector(".navbar .menu");
 
-  if (!toggleBtn || !menu) return;
+  if (!toggleBtn || !menu) {
+    return;
+  }
 
   const toggleIcon = toggleBtn.querySelector("i");
 
@@ -28,21 +30,25 @@ function initNavbar() {
 
   // Klik tombol toggle (hamburger)
   toggleBtn.addEventListener("click", (e) => {
+    e.preventDefault();
     e.stopPropagation();
     const isOpen = menu.classList.contains("is-open");
     setMenuState(!isOpen);
   });
 
-  // Tutup menu jika user mengklik di luar area navbar
-  document.addEventListener("click", (e) => {
-    if (!e.target.closest(".navbar") && menu.classList.contains("is-open")) {
+  // Mencegah klik di dalam menu itu sendiri menutup menunya
+  menu.addEventListener("click", (e) => {
+    // Jika yang diklik adalah link navigasi (<a>), tutup menu
+    if (e.target.closest("a")) {
       setMenuState(false);
+    } else {
+      e.stopPropagation();
     }
   });
 
-  // Tutup menu jika user mengklik salah satu link menu
-  menu.addEventListener("click", (e) => {
-    if (e.target.closest("a") && menu.classList.contains("is-open")) {
+  // Tutup menu jika user mengklik di luar area navbar
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".navbar") && menu.classList.contains("is-open")) {
       setMenuState(false);
     }
   });
