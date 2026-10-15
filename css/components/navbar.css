@@ -1,5 +1,9 @@
+/* ==========================================================================
+   KOMPONEN: NAVBAR
+   ========================================================================== */
 .navbar {
   position: relative;
+  z-index: 1000; /* Stacking context agar dropdown selalu di atas konten lain */
   display: flex;
   align-items: center;
   gap: 36px;
@@ -128,6 +132,10 @@
   display: none;
 }
 
+.nav-toggle i {
+  pointer-events: none; /* Mencegah event target tertahan di ikon */
+}
+
 /* Fokus keyboard (A11y) */
 .logo:focus-visible,
 .menu a:focus-visible,
@@ -150,12 +158,13 @@
 @media (max-width: 900px) {
   .navbar {
     position: relative;
+    z-index: 1000; /* Prioritas tumpukan tertinggi agar menu tidak tertutup hero/konten */
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     padding: 12px 18px 14px;
     gap: 12px 10px;
-    background: rgba(11, 11, 26, 0.92);
+    background: rgba(11, 11, 26, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -250,26 +259,35 @@
     top: 100%;
     left: 0;
     right: 0;
-    z-index: 1000;
+    width: 100%;
+    z-index: 1001; /* Pastikan selalu berada di lapisan terdepan */
     flex-direction: column;
     gap: 0;
     padding: 10px 18px 14px;
-    background: var(--bg-menu, rgba(14, 17, 36, 0.98));
+    background: var(--bg-menu, #0e1124);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.85);
   }
 
   .menu.is-open {
-    display: flex;
+    display: flex !important; /* Memastikan tidak tertimpa oleh aturan CSS lain */
   }
 
   .menu a {
-    padding: 12px 8px;
+    padding: 14px 10px;
     font-size: 15px;
+    color: var(--text, #ffffff);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: block;
+    width: 100%;
+  }
+
+  .menu a:hover,
+  .menu a.active {
+    color: var(--accent);
   }
 
   .menu a::after {
