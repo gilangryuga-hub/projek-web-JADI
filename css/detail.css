@@ -128,8 +128,8 @@ body {
 
 /* Saat film sudah ada di watchlist */
 .btn-outline.active {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: #e50914;
+  border-color: #e50914;
 }
 
 
@@ -279,7 +279,3 @@ body {
   .review-card { flex-basis: 260px; }
 }
 
-.btn-outline.active {
-  background: #e50914;
-  border-color: #e50914;
-}
