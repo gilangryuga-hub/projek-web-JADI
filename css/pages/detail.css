@@ -1,0 +1,263 @@
+/* ==========================================================================
+   HALAMAN: DETAIL FILM / SERIES (detail.html)
+   ========================================================================== */
+
+/* Pembungkus halaman dengan latar backdrop dinamis */
+.page {
+  min-height: 100vh;
+  padding: 24px 48px 48px;
+  background:
+    linear-gradient(rgba(5, 8, 20, 0.82), rgba(5, 8, 20, 0.92)),
+    var(--detail-bg, linear-gradient(180deg, #1b2440, #0b0b1a)) center / cover fixed no-repeat;
+}
+
+/* ===== BAGIAN HEADER DETAIL ===== */
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding-bottom: 24px;
+}
+
+/* Tombol Kembali */
+.btn-back {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 26px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-back:hover {
+  color: var(--accent);
+  transform: translateX(-2px);
+}
+
+/* Poster Film */
+.poster {
+  width: 110px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #222;
+  flex-shrink: 0;
+}
+
+/* Info Detail */
+.detail-info h1 {
+  font-size: 32px;
+  margin-top: 4px;
+  margin-bottom: 14px;
+}
+
+.meta {
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.detail-info .rating {
+  position: static; /* override absolute dari card.css */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  margin-bottom: 18px;
+  text-shadow: none;
+}
+
+/* Tombol Aksi (Trailer & Watchlist) */
+.buttons {
+  display: flex;
+  gap: 14px;
+}
+
+.btn-outline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 20px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast),
+    transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-outline.active {
+  background: #e50914;
+  border-color: #e50914;
+}
+
+.btn-back:focus-visible,
+.btn-outline:focus-visible,
+.btn-next:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ===== SECTION UMUM ===== */
+.section {
+  border-top: 1px solid var(--line);
+  padding: 18px 0 22px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* ===== SINOPSIS ===== */
+.overview {
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 1000px;
+}
+
+/* ===== PEMAIN (CAST) ===== */
+.cast-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.cast-card {
+  text-align: center;
+}
+
+.cast-card img {
+  display: block;
+  width: 90px;
+  height: 120px;
+  margin: 0 auto 8px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+.cast-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cast-role {
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* ===== REVIEWS & COMMENTS ===== */
+.reviews-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.reviews {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 6px;
+}
+
+.review-card {
+  flex: 0 0 420px;
+  scroll-snap-align: start;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-surface);
+}
+
+.review-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.review-head i.fa-circle-user {
+  font-size: 22px;
+}
+
+.review-rating i {
+  color: var(--star);
+}
+
+.review-text {
+  font-size: 12px;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.btn-next {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.btn-next:hover {
+  color: var(--accent);
+}
+
+/* ===== RESPONSIF DETAIL ===== */
+@media (max-width: 900px) {
+  .page {
+    padding: 20px;
+  }
+  .cast-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .review-card {
+    flex-basis: 320px;
+  }
+}
+
+@media (max-width: 560px) {
+  .detail-header {
+    flex-wrap: wrap;
+  }
+  .detail-info h1 {
+    font-size: 26px;
+  }
+  .cast-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .review-card {
+    flex-basis: min(260px, calc(100vw - 64px));
+  }
+
+  .buttons {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-back,
+  .btn-outline {
+    transition: none;
+  }
+}

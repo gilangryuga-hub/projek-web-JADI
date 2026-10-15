@@ -1,28 +1,17 @@
+/**
+ * ============================================================================
+ * HALAMAN: DETAIL (detail.html)
+ * ============================================================================
+ */
 
-// 1. PENGATURAN
-const API_KEY = "5675db644132bff8db5ff739e4cb76c8";                         // ganti dengan API key TMDB milikmu
-const BASE_URL = "https://api.themoviedb.org/3";
-const IMG_POSTER = "https://image.tmdb.org/t/p/w500";    // poster
-const IMG_BACKDROP = "https://image.tmdb.org/t/p/w1280"; // gambar latar
-const IMG_PROFILE = "https://image.tmdb.org/t/p/w185";   // foto pemain
-
-// Baca jenis & id dari alamat halaman
+// Parameter dari URL (?type=movie&id=123 atau ?type=tv&id=456)
 const params = new URLSearchParams(location.search);
 const TYPE = params.get("type") === "tv" ? "tv" : "movie";
 const ID = Number(params.get("id"));
-const WATCH_KEY = TYPE === "tv" ? "watchlist_tv" : "watchlist";   // sama dengan halaman lain
 
-let trailerKey = null;     // kode video YouTube untuk trailer
+let trailerKey = null; // Key video YouTube
 
-// Watchlist disimpan di browser
-let watchlist = [];
-try {
-  watchlist = JSON.parse(localStorage.getItem(WATCH_KEY)) || [];
-} catch (e) {
-  watchlist = [];
-}
-
-// 2. ELEMEN HTML
+// Elemen DOM
 const pageEl = document.getElementById("page");
 const posterEl = document.getElementById("poster");
 const titleEl = document.getElementById("title");
@@ -36,30 +25,6 @@ const btnTrailer = document.getElementById("btn-trailer");
 const btnWatch = document.getElementById("btn-watchlist");
 const btnNext = document.getElementById("btn-next");
 
-
-// 3. FUNGSI BANTU
-async function getJSON(path, extraParams = "") {
-  const url = `${BASE_URL}${path}?api_key=${API_KEY}&language=en-US${extraParams}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("kode " + res.status);
-  return res.json();
-}
-
-// Cegah karakter berbahaya masuk ke HTML
-function esc(text) {
-  return String(text).replace(/[&<>"']/g, c => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[c]));
-}
-
-// 130 menit -> "2h 10m"
-function formatRuntime(min) {
-  if (!min) return "";
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return h ? `${h}h ${m}m` : `${m}m`;
-}
-
 function showError(text) {
   titleEl.textContent = text;
   metaEl.textContent = "";
@@ -67,63 +32,60 @@ function showError(text) {
   overviewEl.textContent = "";
   castEl.innerHTML = "";
   reviewsEl.innerHTML = "";
-  btnNext.hidden = true;
+  if (btnNext) btnNext.hidden = true;
 }
 
-
-// 4. TOMBOL
-
-// Kembali ke halaman sebelumnya
+// Tombol Kembali
 btnBack.addEventListener("click", () => {
-  if (document.referrer) history.back();
-  else location.href = "index.html";
+  if (document.referrer) {
+    history.back();
+  } else {
+    location.href = "index.html";
+  }
 });
 
-// Trailer: buka video YouTube di tab baru
+// Trailer YouTube
 btnTrailer.addEventListener("click", () => {
-  if (trailerKey) window.open(`https://www.youtube.com/watch?v=${trailerKey}`, "_blank");
-  else alert("Trailer tidak tersedia.");
+  if (trailerKey) {
+    window.open(`https://www.youtube.com/watch?v=${trailerKey}`, "_blank");
+  } else {
+    alert("Trailer tidak tersedia.");
+  }
 });
 
-// WatchList: tambah / hapus
+// Watchlist
 function updateWatchButton() {
-  btnWatch.classList.toggle("active", watchlist.includes(ID));
+  btnWatch.classList.toggle("active", WatchlistService.has(TYPE, ID));
 }
 
 btnWatch.addEventListener("click", () => {
-  if (watchlist.includes(ID)) {
-    watchlist = watchlist.filter(x => x !== ID);
-  } else {
-    watchlist.push(ID);
-  }
-  try {
-    localStorage.setItem(WATCH_KEY, JSON.stringify(watchlist));
-  } catch (e) { /* abaikan jika penyimpanan diblokir */ }
+  WatchlistService.toggle(TYPE, ID);
   updateWatchButton();
 });
 
-// Panah geser review
-btnNext.addEventListener("click", () => {
-  reviewsEl.scrollBy({ left: reviewsEl.clientWidth * 0.8, behavior: "smooth" });
-});
+// Navigasi Geser Review
+if (btnNext) {
+  btnNext.addEventListener("click", () => {
+    reviewsEl.scrollBy({ left: reviewsEl.clientWidth * 0.8, behavior: "smooth" });
+  });
+}
 
-
-// 5. TAMPILKAN DATA
+// ===== RENDER DATA DETAIL =====
 function render(data) {
-  const title = data.title || data.name;      // film: "title", series: "name"
+  const title = data.title || data.name || "Detail Film";
   document.title = `${title} - NetList`;
   titleEl.textContent = title;
 
-  // Poster & gambar latar
+  // Poster & Backdrop
   if (data.poster_path) {
-    posterEl.src = IMG_POSTER + data.poster_path;
+    posterEl.src = TMDB_CONFIG.IMG_POSTER + data.poster_path;
     posterEl.alt = title;
   }
   if (data.backdrop_path) {
-    pageEl.style.setProperty("--detail-bg", `url(${IMG_BACKDROP + data.backdrop_path})`);
+    pageEl.style.setProperty("--detail-bg", `url(${TMDB_CONFIG.IMG_BACKDROP + data.backdrop_path})`);
   }
 
-  // Baris info: tahun | genre | durasi
+  // Baris Info: Tahun | Genre | Durasi
   const year = (data.release_date || data.first_air_date || "").slice(0, 4);
   const genres = (data.genres || []).slice(0, 3).map(g => g.name);
   let durasi = "";
@@ -137,17 +99,17 @@ function render(data) {
   metaEl.textContent = [year, ...genres, durasi].filter(Boolean).join(" | ");
 
   // Rating
-  ratingEl.textContent = data.vote_average ? data.vote_average.toFixed(1) + "/10" : "-";
+  ratingEl.textContent = data.vote_average ? `${data.vote_average.toFixed(1)}/10` : "-";
 
   // Sinopsis
   overviewEl.textContent = data.overview || "Sinopsis belum tersedia.";
 
-  // Trailer (video YouTube bertipe Trailer)
+  // Cari Video Trailer
   const videos = (data.videos && data.videos.results) || [];
   const trailer = videos.find(v => v.site === "YouTube" && v.type === "Trailer");
   trailerKey = trailer ? trailer.key : null;
 
-  // Pemain (6 pertama yang punya foto)
+  // Pemain (Cast)
   const cast = ((data.credits && data.credits.cast) || [])
     .filter(c => c.profile_path)
     .slice(0, 6);
@@ -157,19 +119,19 @@ function render(data) {
   } else {
     castEl.innerHTML = cast.map(c => `
       <div class="cast-card">
-        <img src="${IMG_PROFILE + c.profile_path}" alt="${esc(c.name)}">
+        <img src="${TMDB_CONFIG.IMG_PROFILE + c.profile_path}" alt="${esc(c.name)}">
         <p class="cast-name">${esc(c.name)}</p>
         <p class="cast-role">As ${esc(c.character || "-")}</p>
       </div>
     `).join("");
   }
 
-  // Review
+  // Ulasan (Reviews)
   const reviews = ((data.reviews && data.reviews.results) || []).slice(0, 10);
 
   if (reviews.length === 0) {
     reviewsEl.innerHTML = `<p class="empty">Belum ada review.</p>`;
-    btnNext.hidden = true;
+    if (btnNext) btnNext.hidden = true;
   } else {
     reviewsEl.innerHTML = reviews.map(r => {
       const nilai = r.author_details && r.author_details.rating;
@@ -188,21 +150,14 @@ function render(data) {
   updateWatchButton();
 }
 
-
-// 6. MULAI
+// ===== INISIALISASI =====
 async function init() {
   if (!ID) {
-    showError("Film tidak ditemukan.");
-    return;
-  }
-
-  if (API_KEY === "API_KEY_KAMU") {
-    showError("API key belum diisi. Ganti API_KEY_KAMU di bagian atas detail.js.");
+    showError("Film atau series tidak ditemukan.");
     return;
   }
 
   try {
-    // Satu permintaan mengambil detail + pemain + video + review sekaligus
     const data = await getJSON(`/${TYPE}/${ID}`, "&append_to_response=credits,videos,reviews");
     render(data);
   } catch (err) {
