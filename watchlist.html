@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatchList - NetList</title>
+
+  <!-- Font & ikon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CSS yang sama dengan halaman Movies & Series -->
+  <link rel="stylesheet" href="list.css">
+</head>
+<body>
+  <div class="page">
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar">
+      <a href="index.html" class="logo">Net<span class="accent">List</span></a>
+
+      <nav class="menu">
+        <a href="index.html">Home</a>
+        <a href="movies.html">Movies</a>
+        <a href="series.html">Series</a>
+        <a href="watchlist.html" class="active">WatchList</a>
+      </nav>
+
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search-input" placeholder="Search movies...">
+      </div>
+
+      <a href="#" class="profile"><i class="fa-regular fa-circle-user"></i></a>
+    </header>
+
+    <!-- ===== ISI HALAMAN (tanpa sidebar) ===== -->
+    <div class="layout">
+      <main class="content">
+        <h1 class="content-title">My WatchList</h1>
+        <div id="watch-content"></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="watchlist.js"></script>
+</body>
+</html>

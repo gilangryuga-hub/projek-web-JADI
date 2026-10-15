@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail - NetList</title>
+
+  <!-- Font & ikon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CSS terpisah -->
+  <link rel="stylesheet" href="detail.css">
+</head>
+<body>
+  <div class="page" id="page">
+
+    <!-- BAGIAN ATAS: poster + info utama -->
+    <section class="detail-header">
+      <button class="btn-back" id="btn-back" aria-label="Kembali">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+
+      <img class="poster" id="poster" alt="Poster">
+
+      <div class="detail-info">
+        <h1 id="title">Loading...</h1>
+        <p class="meta" id="meta"></p>
+        <p class="rating">
+          <i class="fa-solid fa-star star"></i>
+          <span id="rating"></span>
+        </p>
+
+        <div class="buttons">
+          <button class="btn-outline" id="btn-trailer">
+            <i class="fa-solid fa-play"></i> Trailer
+          </button>
+          <button class="btn-outline" id="btn-watchlist">
+            <i class="fa-solid fa-bookmark"></i> WatchList
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SINOPSIS -->
+    <section class="section">
+      <h2 class="section-title">Synopsis</h2>
+      <p class="overview" id="overview"></p>
+    </section>
+
+    <!-- PEMAIN -->
+    <section class="section">
+      <h2 class="section-title">Cast &amp; Characters</h2>
+      <div class="cast-grid" id="cast"></div>
+    </section>
+
+    <!-- REVIEW -->
+    <section class="section">
+      <h2 class="section-title">Reviews &amp; Comments</h2>
+      <div class="reviews-wrap">
+        <div class="reviews" id="reviews"></div>
+        <button class="btn-next" id="btn-next" aria-label="Review berikutnya">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- JavaScript terpisah -->
+  <script src="detail.js"></script>
+</body>
+</html>

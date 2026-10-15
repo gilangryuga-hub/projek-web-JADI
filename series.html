@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Series - NetList</title>
+
+  <!-- Font & ikon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CSS terpisah (sama dengan halaman Movies) -->
+  <link rel="stylesheet" href="list.css">
+</head>
+
+<!-- data-type="tv" = daftar series -->
+<body data-type="tv">
+  <div class="page">
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar">
+      <a href="index.html" class="logo">Net<span class="accent">List</span></a>
+
+      <nav class="menu">
+        <a href="index.html">Home</a>
+        <a href="movies.html">Movies</a>
+        <a href="series.html" class="active">Series</a>
+        <a href="watchlist.html">WatchList</a>
+      </nav>
+
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search-input" placeholder="Search series...">
+      </div>
+
+      <a href="#" class="profile"><i class="fa-regular fa-circle-user"></i></a>
+    </header>
+
+    <!-- ===== ISI HALAMAN: SIDEBAR + DAFTAR SERIES ===== -->
+    <div class="layout">
+
+      <!-- Sidebar genre series (id genre untuk series berbeda dengan film) -->
+      <aside class="sidebar">
+        <h2 class="sidebar-title">Genre</h2>
+        <ul class="genre-list" id="genre-list">
+          <li><button class="genre-item" data-genre="10759">Action</button></li>
+          <li><button class="genre-item" data-genre="35">Comedy</button></li>
+          <li><button class="genre-item" data-genre="18">Drama</button></li>
+          <li><button class="genre-item" data-genre="80">Crime</button></li>
+          <li><button class="genre-item" data-genre="9648">Mystery</button></li>
+          <li><button class="genre-item" data-genre="10765">Sci-Fi &amp; Fantasy</button></li>
+          <li><button class="genre-item" data-genre="10751">Family</button></li>
+          <li><button class="genre-item" data-genre="16">Animation</button></li>
+          <li><button class="genre-item" data-genre="10764">Reality</button></li>
+        </ul>
+      </aside>
+
+      <!-- Panel daftar series (kanan) -->
+      <main class="content">
+        <h1 class="content-title" id="content-title">All Series</h1>
+        <div class="movie-grid" id="movie-grid"></div>
+        <button class="btn-more" id="btn-more" hidden>Muat lebih banyak</button>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="list.js"></script>
+</body>
+</html>
