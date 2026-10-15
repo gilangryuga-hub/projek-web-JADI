@@ -291,6 +291,11 @@ a {
   color: #e50914;     /* merah */
 }
 
+.btn-watchlist.active {
+  background: #e50914;
+  border-color: #e50914;
+}
+
 /* Pesan jika tidak ada hasil */
 .empty {
   grid-column: 1 / -1;              /* melebar memenuhi semua kolom */
