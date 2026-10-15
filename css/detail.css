@@ -278,3 +278,8 @@ body {
   .cast-grid { grid-template-columns: repeat(2, 1fr); }
   .review-card { flex-basis: 260px; }
 }
+
+.btn-outline.active {
+  background: #e50914;
+  border-color: #e50914;
+}
