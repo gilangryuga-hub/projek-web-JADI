@@ -239,6 +239,11 @@ a {
   object-fit: cover;
 }
 
+.bookmark.active,
+.bookmark.active i {
+  color: #e50914;     /* merah */
+}
+
 /* Rating di kiri bawah */
 .rating {
   position: absolute;
