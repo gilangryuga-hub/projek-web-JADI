@@ -286,8 +286,9 @@ a {
   text-shadow: 0 0 4px #000;
 }
 
-.bookmark.active {
-  color: var(--accent);             /* biru saat masuk watchlist */
+.bookmark.active,
+.bookmark.active i {
+  color: #e50914;     /* merah */
 }
 
 /* Pesan jika tidak ada hasil */
