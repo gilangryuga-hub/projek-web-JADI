@@ -70,7 +70,7 @@ async function showHero(index) {
   heroEl.style.setProperty("--hero-bg", `url(${TMDB_CONFIG.IMG_BACKDROP + movie.backdrop_path})`);
   heroTitle.textContent = movie.title;
   heroTitle.style.cursor = "pointer";
-  heroTitle.onclick = () => location.href = `detail.html?type=movie&id=${movie.id}`;
+  heroTitle.onclick = () => location.href = getPageUrl(`detail.html?type=movie&id=${movie.id}`);
   heroRating.textContent = movie.vote_average ? `${movie.vote_average.toFixed(1)}/10` : "-";
   heroDesc.textContent = movie.overview || "Sinopsis belum tersedia.";
   heroDetail.textContent = "";

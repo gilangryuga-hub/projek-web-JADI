@@ -40,9 +40,19 @@ btnBack.addEventListener("click", () => {
   if (document.referrer) {
     history.back();
   } else {
-    location.href = "index.html";
+    location.href = getPageUrl("index.html");
   }
 });
+
+// Pencarian dari halaman Detail diteruskan ke Movies
+const searchInput = document.getElementById("search-input");
+if (searchInput) {
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    const q = searchInput.value.trim();
+    if (q) location.href = getPageUrl("movies.html?q=" + encodeURIComponent(q));
+  });
+}
 
 // Trailer YouTube
 btnTrailer.addEventListener("click", () => {

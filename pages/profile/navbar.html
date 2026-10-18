@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Navigation & Sidebar - NetList</title>
+
+    <!-- Font & ikon -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Css -->
+    <link rel="stylesheet" href="../../css/global.css" />
+    <link rel="stylesheet" href="../../css/pages/profile/navbar.css" />
+  </head>
+  <body>
+    <div class="navbar-container">
+
+      <!-- TOP BAR -->
+      <header class="top-bar">
+        <!-- Tombol Toggle Sidebar (Bisa di HP dan Komputer) -->
+        <button
+          id="sidebar-toggle"
+          class="menu-btn"
+          type="button"
+          aria-label="Toggle Sidebar"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <a href="../../index.html" class="top-bar__logo">Net<em>List</em></a>
+
+        <div class="top-bar__search">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" placeholder="Search in profile..." />
+        </div>
+
+        <div class="top-bar__actions">
+          <button class="icon-btn" aria-label="Notifikasi">
+            <i class="fa-regular fa-bell"></i>
+          </button>
+          <div class="user-avatar" title="User Profile">U</div>
+        </div>
+      </header>
+
+      <!-- OVERLAY (untuk layar mobile) -->
+      <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+      <!-- SIDEBAR DRAWER (Navigasi Utama Profile) -->
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+          <p class="sidebar-title">Menu Profil</p>
+        </div>
+
+        <nav id="main-nav" aria-label="Navigasi Utama">
+          <ul class="nav-list">
+            <!-- Link ke halaman Home -->
+            <li>
+              <a href="../../index.html" class="nav-link">
+                <i class="fa-solid fa-house nav-icon"></i>
+                <span>Home</span>
+              </a>
+            </li>
+
+            <!-- Menu Profile (CURRENT-ACTIVE) -->
+            <li>
+              <a href="#profile" class="nav-link is-active" aria-current="page">
+                <i class="fa-solid fa-user nav-icon"></i>
+                <span>Profile</span>
+              </a>
+            </li>
+
+            <!-- Film yang ditonton user -->
+            <li>
+              <a href="#films" class="nav-link">
+                <i class="fa-solid fa-film nav-icon"></i>
+                <span>Films</span>
+                <span class="nav-badge">24</span>
+              </a>
+            </li>
+
+            <!-- Diary film user -->
+            <li>
+              <a href="#diary" class="nav-link">
+                <i class="fa-solid fa-book-bookmark nav-icon"></i>
+                <span>Diary</span>
+              </a>
+            </li>
+
+            <!-- Film yang diulas user -->
+            <li>
+              <a href="#reviews" class="nav-link">
+                <i class="fa-solid fa-comment-dots nav-icon"></i>
+                <span>Reviews</span>
+                <span class="nav-badge">8</span>
+              </a>
+            </li>
+
+            <!-- Film yang di-like user -->
+            <li>
+              <a href="#likes" class="nav-link">
+                <i class="fa-solid fa-heart nav-icon"></i>
+                <span>Likes</span>
+              </a>
+            </li>
+
+            <!-- Jaringan teman user -->
+            <li>
+              <a href="#network" class="nav-link">
+                <i class="fa-solid fa-user-group nav-icon"></i>
+                <span>Network</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="profile-preview">
+            <div class="user-avatar sm">U</div>
+            <div class="profile-info">
+              <span class="profile-name">Naufal Dzaky</span>
+              <span class="profile-role">Film Enthusiast</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- KONTEN UTAMA (Main Content) -->
+      <main class="main-content" id="main-content">
+        <div class="content-card">
+          <h1>Halaman Profil Pengguna</h1>
+          <p>
+            Menu navigasi aktif saat ini berada di <strong>Profile</strong>.
+            Gunakan tombol hamburger di kiri atas untuk menyembunyikan atau
+            memunculkan sidebar drawer ini di komputer maupun di HP!
+          </p>
+        </div>
+      </main>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../javascript/utils/helpers.js"></script>
+    <script src="../../javascript/pages/profile/navbar.js"></script>
+  </body>
+</html>
