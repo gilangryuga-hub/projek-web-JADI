@@ -47,3 +47,27 @@ function formatRuntime(min) {
   const m = min % 60;
   return h ? `${h}h ${m}m` : `${m}m`;
 }
+
+/**
+ * Menghasilkan URL relatif yang sesuai untuk navigasi antar halaman,
+ * memperhitungkan apakah halaman saat ini berada di root atau di dalam folder 'pages/'.
+ * @param {string} target - Contoh: "detail.html?id=123", "index.html", "movies.html"
+ */
+function getPageUrl(target) {
+  const normalizedPath = window.location.pathname.replace(/\\/g, "/");
+  const inPages = normalizedPath.includes("/pages/");
+  const isNestedInPages = inPages && normalizedPath.split("/pages/")[1]?.includes("/");
+  const [page, query] = target.split("?");
+  const queryStr = query ? `?${query}` : "";
+
+  if (page === "index.html") {
+    if (isNestedInPages) return `../../index.html${queryStr}`;
+    return (inPages ? "../index.html" : "index.html") + queryStr;
+  }
+
+  if (isNestedInPages) {
+    return `../${page}${queryStr}`;
+  }
+  return (inPages ? page : `pages/${page}`) + queryStr;
+}
+

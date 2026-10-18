@@ -45,7 +45,7 @@ function attachCardListeners(gridElement, onBookmarkToggle = null) {
       const card = e.target.closest(".movie-card");
       if (card) {
         const type = card.dataset.type || gridElement.dataset.type || "movie";
-        location.href = `detail.html?type=${type}&id=${card.dataset.id}`;
+        location.href = getPageUrl(`detail.html?type=${type}&id=${card.dataset.id}`);
       }
       return;
     }

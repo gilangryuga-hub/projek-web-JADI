@@ -1,0 +1,447 @@
+/* ==========================================================================
+   NAVBAR & SIDEBAR KHUSUS PROFILE (css/pages/profile/navbar.css)
+   Terisolasi khusus navigasi halaman profil (tidak bentrok dengan navbar home)
+   Bisa di-toggle di Mobile & Komputer (Desktop)
+   ========================================================================== */
+
+:root {
+  --drawer-w: 260px;
+  --topbar-h: 60px;
+  --sidebar-bg: #0e1124;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --muted: #8e9bb0;
+  --accent-soft: rgba(74, 110, 224, 0.15);
+}
+
+.navbar-container,
+.profile-container {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+  position: relative;
+}
+
+/* ==========================================================================
+   TOP BAR PROFILE
+   ========================================================================== */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-h);
+  background: var(--bg);
+  border-bottom: 1px solid var(--sidebar-border);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  gap: 1rem;
+  z-index: 300;
+}
+
+/* Tombol Menu / Hamburger (Tampil di Mobile & Komputer) */
+.menu-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s, opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menu-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, width 0.3s;
+}
+
+/* Animasi X saat mobile sidebar terbuka */
+body.sidebar-open .menu-btn span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+body.sidebar-open .menu-btn span:nth-child(2) {
+  opacity: 0;
+  width: 0;
+}
+
+body.sidebar-open .menu-btn span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Logo NetList */
+.top-bar__logo {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.top-bar__logo em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+/* Search Box Profile */
+.top-bar__search {
+  flex: 1;
+  max-width: 320px;
+  position: relative;
+  display: none;
+}
+
+@media (min-width: 576px) {
+  .top-bar__search {
+    display: block;
+  }
+}
+
+.top-bar__search input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  padding: 0.45rem 0.75rem 0.45rem 2.2rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.top-bar__search input:focus {
+  border-color: var(--accent);
+  background: rgba(74, 110, 224, 0.06);
+}
+
+.top-bar__search input::placeholder {
+  color: var(--muted);
+}
+
+.top-bar__search .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.875rem;
+  pointer-events: none;
+}
+
+/* Top bar Action & Avatar */
+.top-bar__actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #7697ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(74, 110, 224, 0.3);
+}
+
+.user-avatar.sm {
+  width: 32px;
+  height: 32px;
+  font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   OVERLAY (Khusus Layar Mobile)
+   ========================================================================== */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(2px);
+  z-index: 240;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+body.sidebar-open .sidebar-overlay {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ==========================================================================
+   SIDEBAR DRAWER (Navigasi Profile)
+   ========================================================================== */
+.sidebar {
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  bottom: 0;
+  width: var(--drawer-w);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  z-index: 250;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+  overflow-y: auto;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-header {
+  padding: 0.5rem 1.25rem 0.75rem;
+}
+
+.sidebar-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* Navigasi Utama (#main-nav) */
+#main-nav {
+  flex: 1;
+}
+
+#main-nav .nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+#main-nav .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-sm);
+  margin: 0 0.6rem;
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+}
+
+#main-nav .nav-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+
+#main-nav .nav-link.is-active,
+#main-nav .nav-link[aria-current="page"] {
+  color: var(--text);
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+
+#main-nav .nav-link.is-active::before,
+#main-nav .nav-link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: -0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 65%;
+  background: var(--accent);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-icon {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+/* Sidebar Footer (Profil Ringkas) */
+.sidebar-footer {
+  margin-top: auto;
+  padding: 1rem 1.25rem 0.5rem;
+  border-top: 1px solid var(--sidebar-border);
+}
+
+.profile-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.profile-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-role {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   KONTEN UTAMA (Main Content)
+   ========================================================================== */
+.main-content {
+  padding-top: calc(var(--topbar-h) + 1.5rem);
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-bottom: 2rem;
+  min-height: 100vh;
+  transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.content-card {
+  background: var(--panel);
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius-md);
+  padding: 1.75rem 2rem;
+  max-width: 900px;
+}
+
+.content-card h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.content-card p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   RESPONSIVE: MOBILE & KOMPUTER (DESKTOP)
+   ========================================================================== */
+
+/* 1. Layar Mobile (< 768px):
+   - Sidebar default tersembunyi ke kiri (-100%)
+   - Saat class 'sidebar-open' aktif: Sidebar meluncur keluar
+*/
+@media (max-width: 767px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  body.sidebar-open .sidebar {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+/* 2. Layar Komputer / Desktop (>= 768px):
+   - Tombol toggle (.menu-btn) TETAP AKTIF & TAMPIL DI KOMPUTER
+   - Default: Sidebar terbuka, konten bergeser ke kanan (margin-left: var(--drawer-w))
+   - Saat class 'sidebar-desktop-collapsed' aktif pada body:
+     Sidebar meluncur ke kiri (-100%) & konten otomatis melebar (margin-left: 0)!
+*/
+@media (min-width: 768px) {
+  .sidebar-overlay {
+    display: none !important;
+  }
+
+  .sidebar {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: var(--drawer-w);
+  }
+
+  /* KETIKA DI-HIDE DI KOMPUTER */
+  body.sidebar-desktop-collapsed .sidebar {
+    transform: translateX(-100%);
+  }
+
+  body.sidebar-desktop-collapsed .main-content {
+    margin-left: 0;
+  }
+
+  /* Indikator visual tombol saat sidebar di-hide di komputer */
+  body.sidebar-desktop-collapsed .menu-btn {
+    opacity: 0.7;
+  }
+
+  body.sidebar-desktop-collapsed .menu-btn:hover {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .main-content,
+  .menu-btn span,
+  .sidebar-overlay {
+    transition: none !important;
+  }
+}

@@ -60,7 +60,7 @@ container.addEventListener("click", (e) => {
     const card = e.target.closest(".movie-card");
     if (card) {
       const type = card.dataset.type || card.closest(".movie-grid")?.dataset.type || "movie";
-      location.href = `detail.html?type=${type}&id=${card.dataset.id}`;
+      location.href = getPageUrl(`detail.html?type=${type}&id=${card.dataset.id}`);
     }
     return;
   }
@@ -86,7 +86,7 @@ if (searchInput) {
   searchInput.addEventListener("keydown", (e) => {
     if (e.key !== "Enter") return;
     const q = searchInput.value.trim();
-    if (q) location.href = "movies.html?q=" + encodeURIComponent(q);
+    if (q) location.href = getPageUrl("movies.html?q=" + encodeURIComponent(q));
   });
 }
 
