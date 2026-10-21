@@ -18,7 +18,8 @@ function createCardHTML(item, type = "movie") {
   const posterUrl = item.poster_path ? `${TMDB_CONFIG.IMG_POSTER}${item.poster_path}` : "";
 
   return `
-    <div class="movie-card" data-id="${item.id}" data-type="${type}">
+    <div class="movie-card" data-id="${item.id}" data-type="${type}"
+      data-title="${esc(title)}" data-poster-path="${item.poster_path || ""}">
       <img src="${posterUrl}" alt="${esc(title)}" loading="lazy">
       <span class="rating"><i class="fa-solid fa-star"></i> ${rating}/10</span>
       <button class="bookmark ${isBookmarked ? "active" : ""}" aria-label="Watchlist">
@@ -55,8 +56,17 @@ function attachCardListeners(gridElement, onBookmarkToggle = null) {
     const id = Number(card.dataset.id);
     const type = card.dataset.type || gridElement.dataset.type || "movie";
 
-    const isAdded = WatchlistService.toggle(type, id);
-    btn.classList.toggle("active", isAdded);
+    const media = {
+      id,
+      title: card.dataset.title,
+      poster_path: card.dataset.posterPath
+    };
+    WatchlistService.toggle(media, type)
+      .then(isAdded => btn.classList.toggle("active", isAdded))
+      .catch(error => {
+        console.error("Gagal mengubah watchlist:", error);
+        window.dispatchEvent(new CustomEvent("auth:required"));
+      });
 
     if (typeof onBookmarkToggle === "function") {
       onBookmarkToggle(id, isAdded, type);

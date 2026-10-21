@@ -1,117 +1,95 @@
 /**
- * ============================================================================
- * HALAMAN: WATCHLIST (watchlist.html)
- * ============================================================================
+ * Halaman watchlist yang mengambil data langsung dari Django REST API.
  */
-
-let movies = []; // Data detail film di watchlist
-let series = []; // Data detail series di watchlist
+let movies = [];
+let series = [];
 
 const container = document.getElementById("watch-content");
 const searchInput = document.getElementById("search-input");
 
-// Mengambil detail untuk banyak ID secara paralel
-async function fetchDetails(type, ids) {
-  const results = await Promise.all(
-    ids.map(id => getJSON(`/${type}/${id}`).catch(() => null))
-  );
-  return results.filter(Boolean);
-}
-
-// ===== RENDER WATCHLIST =====
+/**
+ * Mengubah item API menjadi format yang dipahami card component.
+ * @param {object[]} items - Item watchlist dari API.
+ * @param {string} type - `movie` atau `tv`.
+ * @returns {string} HTML kartu.
+ */
 function cardsHTML(items, type) {
-  return items
-    .filter(m => m.poster_path)
-    .map(m => createCardHTML(m, type))
-    .join("");
+  return items.map(item => createCardHTML({
+    id: item.tmdb_id,
+    title: item.title,
+    poster_path: item.poster_path
+  }, type)).join("");
 }
 
-function render() {
+/**
+ * Merender watchlist film dan series.
+ * @returns {void}
+ */
+function renderWatchlist() {
   if (movies.length === 0 && series.length === 0) {
-    container.innerHTML = `<p class="empty">WatchList masih kosong.<br>Klik ikon bookmark pada film atau series untuk menyimpannya di sini.</p>`;
+    container.innerHTML = `<p class="empty">WatchList masih kosong.</p>`;
     return;
   }
-
   let html = "";
-
   if (movies.length) {
-    html += `
-      <h2 class="content-subtitle">Movies</h2>
-      <div class="movie-grid" data-type="movie">${cardsHTML(movies, "movie")}</div>
-    `;
+    html += `<h2 class="content-subtitle">Movies</h2>
+      <div class="movie-grid" data-type="movie">${cardsHTML(movies, "movie")}</div>`;
   }
-
   if (series.length) {
-    html += `
-      <h2 class="content-subtitle">Series</h2>
-      <div class="movie-grid" data-type="tv">${cardsHTML(series, "tv")}</div>
-    `;
+    html += `<h2 class="content-subtitle">Series</h2>
+      <div class="movie-grid" data-type="tv">${cardsHTML(series, "tv")}</div>`;
   }
-
   container.innerHTML = html;
 }
 
-// Event Delegation untuk klik di dalam container Watchlist
-container.addEventListener("click", (e) => {
-  const btn = e.target.closest(".bookmark");
+container.addEventListener("click", async event => {
+  const button = event.target.closest(".bookmark");
+  const card = event.target.closest(".movie-card");
+  if (!card) return;
+  const type = card.dataset.type || "movie";
+  const tmdbId = Number(card.dataset.id);
 
-  // Jika klik kartu, pergi ke halaman detail
-  if (!btn) {
-    const card = e.target.closest(".movie-card");
-    if (card) {
-      const type = card.dataset.type || card.closest(".movie-grid")?.dataset.type || "movie";
-      location.href = getPageUrl(`detail.html?type=${type}&id=${card.dataset.id}`);
-    }
+  if (!button) {
+    location.href = getPageUrl(`detail.html?type=${type}&id=${tmdbId}`);
     return;
   }
 
-  // Jika klik bookmark (menghapus dari watchlist)
-  const card = btn.closest(".movie-card");
-  const id = Number(card.dataset.id);
-  const type = card.dataset.type || card.closest(".movie-grid")?.dataset.type || "movie";
-
-  WatchlistService.toggle(type, id);
-
-  if (type === "tv") {
-    series = series.filter(s => s.id !== id);
-  } else {
-    movies = movies.filter(m => m.id !== id);
+  const item = WatchlistService.find(type, tmdbId);
+  if (!item) return;
+  try {
+    await WatchlistService.remove(item.id);
+    movies = movies.filter(entry => entry.id !== item.id);
+    series = series.filter(entry => entry.id !== item.id);
+    renderWatchlist();
+  } catch (error) {
+    console.error("Gagal menghapus watchlist:", error);
   }
-
-  render();
 });
 
-// Pencarian dari Watchlist diteruskan ke halaman Movies
 if (searchInput) {
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter") return;
-    const q = searchInput.value.trim();
-    if (q) location.href = getPageUrl("movies.html?q=" + encodeURIComponent(q));
+  searchInput.addEventListener("keydown", event => {
+    if (event.key === "Enter" && searchInput.value.trim()) {
+      location.href = getPageUrl(`movies.html?q=${encodeURIComponent(searchInput.value.trim())}`);
+    }
   });
 }
 
-// ===== INISIALISASI =====
-async function init() {
-  const movieIds = WatchlistService.getAll("movie");
-  const seriesIds = WatchlistService.getAll("tv");
-
-  if (movieIds.length === 0 && seriesIds.length === 0) {
-    render();
-    return;
-  }
-
+/**
+ * Memuat dan merender watchlist user.
+ * @returns {Promise<void>}
+ */
+async function initWatchlist() {
   container.innerHTML = `<p class="empty">Loading...</p>`;
-
   try {
-    [movies, series] = await Promise.all([
-      fetchDetails("movie", movieIds),
-      fetchDetails("tv", seriesIds)
-    ]);
-    render();
-  } catch (err) {
-    console.error(err);
-    container.innerHTML = `<p class="empty">Gagal memuat data (${err.message}).</p>`;
+    const items = await WatchlistService.getAll();
+    movies = items.filter(item => item.media_type === "movie");
+    series = items.filter(item => item.media_type === "tv");
+    renderWatchlist();
+  } catch (error) {
+    console.error(error);
+    container.innerHTML = `<p class="empty">${error.message}</p>`;
+    window.dispatchEvent(new CustomEvent("auth:required"));
   }
 }
 
-init();
+initWatchlist();
