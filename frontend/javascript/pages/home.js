@@ -103,7 +103,9 @@ btnHeroWatchlist.addEventListener("click", async () => {
     if (cardBookmark) cardBookmark.classList.toggle("active", isAdded);
   } catch (error) {
     console.error("Gagal mengubah watchlist:", error);
-    window.dispatchEvent(new CustomEvent("auth:required"));
+    window.dispatchEvent(new CustomEvent("auth:required", {
+      detail: { message: "Silakan login terlebih dahulu untuk menyimpan film ke WatchList." }
+    }));
   }
 });
 

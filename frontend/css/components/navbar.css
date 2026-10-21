@@ -1,6 +1,3 @@
-/* ==========================================================================
-   KOMPONEN: NAVBAR
-   ========================================================================== */
 .navbar {
   position: relative;
   z-index: 1000; /* Stacking context agar dropdown selalu di atas konten lain */
@@ -127,6 +124,76 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* Status login aktif pada ikon profil */
+.profile.is-logged-in {
+  position: relative;
+  color: var(--accent);
+}
+
+.profile.is-logged-in::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
+/* Tombol Autentikasi Modern (Login/Register & Logout) */
+.nav-auth {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin-right: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  font-size: 17px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.nav-auth:hover {
+  background: rgba(74, 110, 224, 0.18);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(74, 110, 224, 0.28);
+}
+
+.nav-auth:active {
+  transform: translateY(0);
+}
+
+.nav-auth:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 50%;
+}
+
+.nav-auth--guest {
+  color: var(--text);
+}
+
+.nav-auth--logged-in:hover {
+  background: rgba(217, 38, 44, 0.18);
+  border-color: var(--danger);
+  color: var(--danger);
+  box-shadow: 0 4px 14px rgba(217, 38, 44, 0.28);
+}
+
+/* Auth link dalam menu mobile */
+.menu .mobile-menu-auth {
+  display: none;
+}
+
 /* Tombol menu toggle (hanya aktif di layar mobile/tablet) */
 .nav-toggle {
   display: none;
@@ -139,6 +206,7 @@
 /* Fokus keyboard (A11y) */
 .logo:focus-visible,
 .menu a:focus-visible,
+.nav-auth:focus-visible,
 .nav-toggle:focus-visible,
 .profile:focus-visible {
   outline: 2px solid var(--accent);
@@ -198,8 +266,27 @@
     border-color: rgba(255, 255, 255, 0.3);
   }
 
-  .nav-toggle {
+  .nav-auth {
     order: 3;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    color: var(--text);
+    margin-right: 0;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .nav-auth:hover,
+  .nav-auth:active {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .nav-toggle {
+    order: 4;
     display: inline-grid;
     place-items: center;
     flex-shrink: 0;
@@ -223,7 +310,7 @@
 
   /* Baris 2: Search Box membentang penuh (100% lebar layar) */
   .search-box {
-    order: 4;
+    order: 5;
     flex: 1 1 100%;
     width: 100%;
     min-width: 0;
@@ -253,7 +340,7 @@
 
   /* Dropdown Menu (Muncul saat tombol toggle diklik) */
   .menu {
-    order: 5;
+    order: 6;
     display: none;
     position: absolute;
     top: 100%;
@@ -297,6 +384,17 @@
   .menu a:last-child {
     border-bottom: none;
   }
+
+  .menu .mobile-menu-auth {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    padding-top: 14px;
+    margin-top: 6px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.14);
+  }
 }
 
 /* Penyesuaian presisi untuk layar ekstra kecil (320px - 480px) */
@@ -311,6 +409,7 @@
   }
 
   .profile,
+  .nav-auth,
   .nav-toggle {
     width: 38px;
     height: 38px;

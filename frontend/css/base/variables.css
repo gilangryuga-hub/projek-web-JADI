@@ -2,10 +2,14 @@
   --bg: #0b0b1a;                     /* Warna latar belakang utama */
   --bg-menu: #0e1124;                /* Warna latar belakang menu mobile dropdown */
   --panel: rgba(20, 24, 44, 0.85);   /* Panel film semi-transparan */
+  --surface: #101426;                /* Latar modal / dialog */
+  --surface-hover: #171c35;          /* Hover elemen permukaan */
+  --surface-border: rgba(255, 255, 255, 0.14); /* Garis tepi modal/kartu */
   --accent: #4a6ee0;                 /* Biru aksen */
   --danger: #d9262c;                 /* Merah aksen / tombol trailer / bookmark aktif */
   --star: #f5c518;                   /* Kuning bintang rating */
   --text: #ffffff;                   /* Warna teks utama */
+  --text-muted: rgba(255, 255, 255, 0.65);     /* Teks sekunder */
   --border: rgba(255, 255, 255, 0.6);/* Border elemen umum */
   --line: rgba(255, 255, 255, 0.7);  /* Garis pemisah */
   --card: rgba(10, 12, 28, 0.9);     /* Background kartu review */
