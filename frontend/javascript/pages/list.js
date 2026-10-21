@@ -148,11 +148,17 @@ if (searchInput) {
 btnMore.addEventListener("click", () => loadPage(currentPage + 1));
 
 // ===== INISIALISASI HALAMAN =====
-// Cek jika ada query parameter pencarian '?q=...' dari halaman lain
-const queryFromUrl = new URLSearchParams(location.search).get("q");
-if (queryFromUrl) {
-  if (searchInput) searchInput.value = queryFromUrl;
-  doSearch(queryFromUrl);
-} else {
-  loadList();
-}
+(async function initList() {
+  try {
+    if (AuthService.isAuthenticated()) await WatchlistService.getAll();
+  } catch (error) {
+    console.warn("Watchlist API belum tersedia:", error.message);
+  }
+  const queryFromUrl = new URLSearchParams(location.search).get("q");
+  if (queryFromUrl) {
+    if (searchInput) searchInput.value = queryFromUrl;
+    doSearch(queryFromUrl);
+  } else {
+    loadList();
+  }
+})();

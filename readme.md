@@ -48,20 +48,18 @@ film atau series ke dalam watchlist.
 - Endpoint untuk mengambil data pengguna yang sedang login.
 - Endpoint REST API watchlist dengan pembatasan berdasarkan pengguna.
 - Validasi agar item watchlist yang sama tidak ditambahkan dua kali.
+- Jurnal tontonan dengan rating kelipatan 0.5 pada rentang 0.5 sampai 5.0.
 - Pengujian API untuk akses anonim, pembuatan, pengambilan, duplikasi,
   dan penghapusan watchlist milik pengguna lain.
 
-> Catatan: API autentikasi dan API watchlist sudah tersedia di backend,
-> tetapi frontend saat ini masih menggunakan `localStorage` untuk fitur
-> watchlist dan belum menyediakan halaman login/registrasi yang terhubung
-> ke API tersebut.
+> Catatan: Frontend sekarang menggunakan Django REST API untuk autentikasi,
+> watchlist, dan jurnal. Token JWT disimpan di `localStorage` dan otomatis
+> di-refresh ketika API mengembalikan status 401.
 
 ## Fitur yang Direncanakan
 
-- Journaling pengguna.
 - Menyimpan film dan series favorit pengguna.
 - Daftar film dan series teratas mingguan.
-- Integrasi penuh frontend dengan autentikasi JWT dan API watchlist.
 - home atas di slow in jangan kaku.
 ## Struktur Proyek
 
@@ -98,6 +96,10 @@ Semua endpoint berikut menggunakan prefix `/api/`:
 | `GET /api/watchlist/` | Mengambil watchlist pengguna yang sedang login |
 | `POST /api/watchlist/` | Menambahkan item ke watchlist |
 | `DELETE /api/watchlist/<id>/` | Menghapus item watchlist |
+| `GET /api/journals/` | Mengambil jurnal pengguna yang sedang login |
+| `POST /api/journals/` | Membuat jurnal tontonan |
+| `PUT /api/journals/<id>/` | Memperbarui jurnal tontonan |
+| `DELETE /api/journals/<id>/` | Menghapus jurnal tontonan |
 
 Endpoint yang membutuhkan autentikasi menggunakan token JWT.
 

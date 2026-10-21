@@ -23,6 +23,7 @@ const reviewsEl = document.getElementById("reviews");
 const btnBack = document.getElementById("btn-back");
 const btnTrailer = document.getElementById("btn-trailer");
 const btnWatch = document.getElementById("btn-watchlist");
+const btnJournal = document.getElementById("btn-journal");
 const btnNext = document.getElementById("btn-next");
 
 function showError(text) {
@@ -68,10 +69,29 @@ function updateWatchButton() {
   btnWatch.classList.toggle("active", WatchlistService.has(TYPE, ID));
 }
 
-btnWatch.addEventListener("click", () => {
-  WatchlistService.toggle(TYPE, ID);
-  updateWatchButton();
+btnWatch.addEventListener("click", async () => {
+  try {
+    const media = await getJSON(`/${TYPE}/${ID}`);
+    const isAdded = await WatchlistService.toggle(media, TYPE);
+    btnWatch.classList.toggle("active", isAdded);
+  } catch (error) {
+    console.error("Gagal mengubah watchlist:", error);
+    window.dispatchEvent(new CustomEvent("auth:required"));
+  }
 });
+
+if (btnJournal) {
+  btnJournal.addEventListener("click", async () => {
+    try {
+      const media = await getJSON(`/${TYPE}/${ID}`);
+      if (window.JournalModal) {
+        window.JournalModal.open(media, TYPE);
+      }
+    } catch (error) {
+      console.error("Gagal memuat media untuk jurnal:", error);
+    }
+  });
+}
 
 // Navigasi Geser Review
 if (btnNext) {

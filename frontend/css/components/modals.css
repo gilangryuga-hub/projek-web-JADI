@@ -1,0 +1,64 @@
+.app-modal[hidden] {
+  display: none;
+}
+
+.app-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(0 0 0 / 70%);
+}
+
+.app-modal__dialog {
+  position: relative;
+  width: min(100%, 430px);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  color: var(--text, #111);
+}
+
+.app-modal__dialog form {
+  display: grid;
+  gap: 14px;
+}
+
+.app-modal__dialog label {
+  display: grid;
+  gap: 6px;
+}
+
+.app-modal__dialog input,
+.app-modal__dialog textarea {
+  width: 100%;
+  padding: 9px;
+}
+
+.app-modal__close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  border: 0;
+  background: transparent;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.app-modal__error {
+  min-height: 1.2em;
+  color: #b42318;
+}
+
+.app-modal__switch {
+  margin-top: 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

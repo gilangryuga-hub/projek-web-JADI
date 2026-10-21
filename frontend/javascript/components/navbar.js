@@ -9,6 +9,7 @@ function initNavbar() {
   const menu = document.getElementById("nav-menu") || document.querySelector(".navbar .menu");
 
   if (!toggleBtn || !menu) {
+    initAuthNavbar();
     return;
   }
 
@@ -66,6 +67,50 @@ function initNavbar() {
     if (window.innerWidth > 900 && menu.classList.contains("is-open")) {
       setMenuState(false);
     }
+  });
+
+  initAuthNavbar();
+}
+
+/**
+ * Menambahkan kontrol login/logout dan menyinkronkan status Guest/user.
+ * @returns {void}
+ */
+function initAuthNavbar() {
+  const nav = document.querySelector(".navbar");
+  if (!nav || typeof AuthService === "undefined") return;
+
+  let authButton = nav.querySelector("[data-auth-action]");
+  if (!authButton) {
+    authButton = document.createElement("button");
+    authButton.type = "button";
+    authButton.className = "nav-auth";
+    authButton.dataset.authAction = "true";
+    nav.appendChild(authButton);
+  }
+
+  /**
+   * Memperbarui label dan aksi tombol autentikasi.
+   * @returns {void}
+   */
+  function renderAuthState() {
+    const loggedIn = AuthService.isAuthenticated();
+    authButton.textContent = loggedIn ? "Logout" : "Login";
+    authButton.onclick = () => {
+      if (loggedIn) {
+        AuthService.logout();
+      } else if (window.AuthModal) {
+        window.AuthModal.open();
+      }
+    };
+  }
+
+  renderAuthState();
+  window.addEventListener("auth:login", renderAuthState);
+  window.addEventListener("auth:logout", renderAuthState);
+  window.addEventListener("auth:changed", renderAuthState);
+  window.addEventListener("auth:required", () => {
+    if (window.AuthModal) window.AuthModal.open();
   });
 }
 

@@ -92,16 +92,18 @@ async function showHero(index) {
 }
 
 // Tombol Watchlist di Hero
-btnHeroWatchlist.addEventListener("click", () => {
+btnHeroWatchlist.addEventListener("click", async () => {
   if (!currentHeroId) return;
 
-  const isAdded = WatchlistService.toggle("movie", currentHeroId);
-  updateHeroWatchlistButton();
-
-  // Samakan tampilan bookmark pada kartu di dalam grid jika film itu ada
-  const cardBookmark = grid.querySelector(`[data-id="${currentHeroId}"] .bookmark`);
-  if (cardBookmark) {
-    cardBookmark.classList.toggle("active", isAdded);
+  try {
+    const movie = heroMovies.find(item => item.id === currentHeroId);
+    const isAdded = await WatchlistService.toggle(movie, "movie");
+    updateHeroWatchlistButton();
+    const cardBookmark = grid.querySelector(`[data-id="${currentHeroId}"] .bookmark`);
+    if (cardBookmark) cardBookmark.classList.toggle("active", isAdded);
+  } catch (error) {
+    console.error("Gagal mengubah watchlist:", error);
+    window.dispatchEvent(new CustomEvent("auth:required"));
   }
 });
 
@@ -183,4 +185,11 @@ function loadPopular() {
 }
 
 // Jalankan saat halaman dibuka
-loadPopular();
+(async function initHome() {
+  try {
+    if (AuthService.isAuthenticated()) await WatchlistService.getAll();
+  } catch (error) {
+    console.warn("Watchlist API belum tersedia:", error.message);
+  }
+  loadPopular();
+})();
