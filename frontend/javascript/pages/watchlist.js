@@ -87,9 +87,39 @@ async function initWatchlist() {
     renderWatchlist();
   } catch (error) {
     console.error(error);
-    container.innerHTML = `<p class="empty">${error.message}</p>`;
-    window.dispatchEvent(new CustomEvent("auth:required"));
+    container.innerHTML = `
+      <div class="watchlist-empty-auth">
+        <i class="fa-regular fa-bookmark empty-auth-icon"></i>
+        <h2>WatchList Perlu Akses Akun</h2>
+        <p>Masuk atau buat akun baru untuk mulai menyimpan dan melihat daftar tontonan kamu.</p>
+        <button type="button" class="btn-primary" id="btn-watchlist-login">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk / Daftar
+        </button>
+      </div>`;
+    const btn = document.getElementById("btn-watchlist-login");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        if (window.AuthModal) {
+          window.AuthModal.open(false, "Silakan login untuk melihat daftar WatchList kamu.");
+        }
+      });
+    }
+    window.dispatchEvent(new CustomEvent("auth:required", {
+      detail: { message: "Silakan login terlebih dahulu untuk melihat daftar WatchList kamu." }
+    }));
   }
 }
 
 initWatchlist();
+
+window.addEventListener("auth:changed", () => {
+  initWatchlist();
+});
+window.addEventListener("auth:login", () => {
+  initWatchlist();
+});
+window.addEventListener("auth:logout", () => {
+  movies = [];
+  series = [];
+  initWatchlist();
+});

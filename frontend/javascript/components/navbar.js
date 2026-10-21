@@ -74,11 +74,14 @@ function initNavbar() {
 
 /**
  * Menambahkan kontrol login/logout dan menyinkronkan status Guest/user.
+ * Menggunakan ikon modern agar tampilan navbar lebih lega dan rapi.
  * @returns {void}
  */
 function initAuthNavbar() {
   const nav = document.querySelector(".navbar");
   if (!nav || typeof AuthService === "undefined") return;
+
+  const menu = document.getElementById("nav-menu") || nav.querySelector(".menu");
 
   let authButton = nav.querySelector("[data-auth-action]");
   if (!authButton) {
@@ -86,21 +89,102 @@ function initAuthNavbar() {
     authButton.type = "button";
     authButton.className = "nav-auth";
     authButton.dataset.authAction = "true";
-    nav.appendChild(authButton);
+
+    const toggleBtn = nav.querySelector("#nav-toggle");
+    if (toggleBtn) {
+      nav.insertBefore(authButton, toggleBtn);
+    } else {
+      nav.appendChild(authButton);
+    }
+  }
+
+  // Tangani klik ikon profil untuk Guest
+  const profileLink = nav.querySelector(".profile");
+  if (profileLink && !profileLink.dataset.boundAuth) {
+    profileLink.dataset.boundAuth = "true";
+    profileLink.addEventListener("click", (e) => {
+      if (!AuthService.isAuthenticated()) {
+        e.preventDefault();
+        if (window.AuthModal) {
+          window.AuthModal.open(false, "Silakan login untuk mengakses halaman profil kamu.");
+        }
+      }
+    });
+  }
+
+  // Item autentikasi untuk menu dropdown mobile
+  let mobileAuthItem = menu ? menu.querySelector(".mobile-menu-auth") : null;
+  if (menu && !mobileAuthItem) {
+    mobileAuthItem = document.createElement("a");
+    mobileAuthItem.href = "#";
+    mobileAuthItem.className = "mobile-menu-auth";
+    menu.appendChild(mobileAuthItem);
   }
 
   /**
-   * Memperbarui label dan aksi tombol autentikasi.
+   * Memperbarui label, ikon, dan aksi tombol autentikasi.
    * @returns {void}
    */
   function renderAuthState() {
     const loggedIn = AuthService.isAuthenticated();
-    authButton.textContent = loggedIn ? "Logout" : "Login";
+
+    // Perbarui status visual ikon profil
+    if (profileLink) {
+      profileLink.classList.toggle("is-logged-in", loggedIn);
+      const icon = profileLink.querySelector("i");
+      if (icon) {
+        if (loggedIn) {
+          icon.className = "fa-solid fa-circle-user";
+          profileLink.setAttribute("title", "Lihat Profil Saya");
+          profileLink.setAttribute("aria-label", "Lihat Profil Saya");
+        } else {
+          icon.className = "fa-regular fa-circle-user";
+          profileLink.setAttribute("title", "Profil Pengguna");
+          profileLink.setAttribute("aria-label", "Profil Pengguna");
+        }
+      }
+    }
+
+    // Tombol Auth Navbar (Ikon Modern)
+    if (loggedIn) {
+      authButton.className = "nav-auth nav-auth--logged-in";
+      authButton.innerHTML = `<i class="fa-solid fa-arrow-right-from-bracket"></i>`;
+      authButton.setAttribute("title", "Keluar (Logout)");
+      authButton.setAttribute("aria-label", "Keluar dari akun");
+
+      if (mobileAuthItem) {
+        mobileAuthItem.innerHTML = `<i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar (Logout)`;
+        mobileAuthItem.onclick = (e) => {
+          e.preventDefault();
+          if (confirm("Apakah kamu yakin ingin keluar (logout)?")) {
+            AuthService.logout();
+          }
+        };
+      }
+    } else {
+      authButton.className = "nav-auth nav-auth--guest";
+      authButton.innerHTML = `<i class="fa-solid fa-arrow-right-to-bracket"></i>`;
+      authButton.setAttribute("title", "Masuk / Daftar Akun");
+      authButton.setAttribute("aria-label", "Masuk atau Daftar Akun");
+
+      if (mobileAuthItem) {
+        mobileAuthItem.innerHTML = `<i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk / Daftar`;
+        mobileAuthItem.onclick = (e) => {
+          e.preventDefault();
+          if (window.AuthModal) {
+            window.AuthModal.open(false);
+          }
+        };
+      }
+    }
+
     authButton.onclick = () => {
       if (loggedIn) {
-        AuthService.logout();
+        if (confirm("Apakah kamu yakin ingin keluar (logout)?")) {
+          AuthService.logout();
+        }
       } else if (window.AuthModal) {
-        window.AuthModal.open();
+        window.AuthModal.open(false);
       }
     };
   }
@@ -109,8 +193,9 @@ function initAuthNavbar() {
   window.addEventListener("auth:login", renderAuthState);
   window.addEventListener("auth:logout", renderAuthState);
   window.addEventListener("auth:changed", renderAuthState);
-  window.addEventListener("auth:required", () => {
-    if (window.AuthModal) window.AuthModal.open();
+  window.addEventListener("auth:required", (event) => {
+    const reason = event.detail && event.detail.message ? event.detail.message : "";
+    if (window.AuthModal) window.AuthModal.open(false, reason);
   });
 }
 

@@ -1,14 +1,10 @@
-/**
- * HTTP client terpusat untuk Django REST API.
- *
- * Client ini menyimpan token JWT di localStorage, melakukan refresh token
- * ketika menerima 401, lalu mengulang request awal satu kali.
- */
-const API_CLIENT_CONFIG = {
-  baseUrl: "http://127.0.0.1:8000",
-  accessTokenKey: "access_token",
-  refreshTokenKey: "refresh_token"
-};
+import { API_CONFIG } from '../config/api.js';
+
+// Menggunakan variabel dari config, bukan string hardcode
+export async function fetchData(endpoint) {
+  const response = await fetch(`${API_CONFIG.DJANGO_BASE_URL}${endpoint}`);
+  return response.json();
+}
 
 /**
  * Mengambil access token yang sedang tersimpan.

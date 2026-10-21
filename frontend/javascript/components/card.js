@@ -62,14 +62,17 @@ function attachCardListeners(gridElement, onBookmarkToggle = null) {
       poster_path: card.dataset.posterPath
     };
     WatchlistService.toggle(media, type)
-      .then(isAdded => btn.classList.toggle("active", isAdded))
+      .then(isAdded => {
+        btn.classList.toggle("active", isAdded);
+        if (typeof onBookmarkToggle === "function") {
+          onBookmarkToggle(id, isAdded, type);
+        }
+      })
       .catch(error => {
         console.error("Gagal mengubah watchlist:", error);
-        window.dispatchEvent(new CustomEvent("auth:required"));
+        window.dispatchEvent(new CustomEvent("auth:required", {
+          detail: { message: "Silakan login terlebih dahulu untuk menyimpan film ke WatchList." }
+        }));
       });
-
-    if (typeof onBookmarkToggle === "function") {
-      onBookmarkToggle(id, isAdded, type);
-    }
   });
 }

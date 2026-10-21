@@ -76,12 +76,20 @@ btnWatch.addEventListener("click", async () => {
     btnWatch.classList.toggle("active", isAdded);
   } catch (error) {
     console.error("Gagal mengubah watchlist:", error);
-    window.dispatchEvent(new CustomEvent("auth:required"));
+    window.dispatchEvent(new CustomEvent("auth:required", {
+      detail: { message: "Silakan login terlebih dahulu untuk menyimpan film ke WatchList." }
+    }));
   }
 });
 
 if (btnJournal) {
   btnJournal.addEventListener("click", async () => {
+    if (typeof AuthService !== "undefined" && !AuthService.isAuthenticated()) {
+      window.dispatchEvent(new CustomEvent("auth:required", {
+        detail: { message: "Silakan login terlebih dahulu untuk mencatat jurnal tontonan." }
+      }));
+      return;
+    }
     try {
       const media = await getJSON(`/${TYPE}/${ID}`);
       if (window.JournalModal) {
@@ -182,17 +190,15 @@ function render(data) {
 
 // ===== INISIALISASI =====
 async function init() {
-  if (!ID) {
-    showError("Film atau series tidak ditemukan.");
-    return;
-  }
-
+  if (!ID) return showError("Film tidak ditemukan.");
   try {
+    if (AuthService.isAuthenticated()) {
+      await WatchlistService.getAll(); 
+    }
     const data = await getJSON(`/${TYPE}/${ID}`, "&append_to_response=credits,videos,reviews");
     render(data);
   } catch (err) {
-    console.error(err);
-    showError(`Gagal memuat data (${err.message}).`);
+    showError(err.message);
   }
 }
 
