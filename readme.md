@@ -62,7 +62,7 @@ film atau series ke dalam watchlist.
 - Menyimpan film dan series favorit pengguna.
 - Daftar film dan series teratas mingguan.
 - Integrasi penuh frontend dengan autentikasi JWT dan API watchlist.
-
+- home atas di slow in jangan kaku.
 ## Struktur Proyek
 
 ```text
