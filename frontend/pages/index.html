@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetList</title>
+
+  <!-- Font & ikon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CSS Modular -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/pages/home.css">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <a href="index.html" class="logo">Net<span class="accent">List</span></a>
+
+    <nav class="menu" id="nav-menu">
+      <a href="index.html" class="active">Home</a>
+      <a href="pages/movies.html">Movies</a>
+      <a href="pages/series.html">Series</a>
+      <a href="pages/watchlist.html">WatchList</a>
+    </nav>
+
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="search-input" placeholder="Search movies...">
+    </div>
+
+    <a href="pages/profile/navbar.html" class="profile" aria-label="Profile"><i class="fa-regular fa-circle-user"></i></a>
+
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </header>
+
+  <!-- ===== HERO (banner film) ===== -->
+  <section class="hero" id="hero">
+    <button class="arrow arrow-left" id="btn-prev" aria-label="Sebelumnya">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+
+    <div class="hero-info">
+      <h1 id="hero-title">Loading...</h1>
+
+      <p class="hero-meta">
+        <i class="fa-solid fa-star star"></i>
+        <span id="hero-rating">-</span>
+        <span id="hero-detail"></span>
+      </p>
+
+      <p class="hero-desc" id="hero-desc"></p>
+
+      <div class="hero-buttons">
+        <button class="btn-trailer" id="btn-trailer">
+          <i class="fa-solid fa-play"></i> Trailer
+        </button>
+        <button class="btn-watchlist" id="btn-hero-watchlist">
+          <i class="fa-regular fa-bookmark"></i> WatchList
+        </button>
+      </div>
+    </div>
+
+    <button class="arrow arrow-right" id="btn-next" aria-label="Berikutnya">
+      <i class="fa-solid fa-arrow-right"></i>
+    </button>
+  </section>
+
+  <!-- ===== DAFTAR FILM ===== -->
+  <section class="movies">
+    <h2 class="section-title" id="section-title">Popular Horror</h2>
+    <div class="movie-grid" id="movie-grid"></div>
+    <button class="btn-more" id="btn-more" hidden>Muat lebih banyak</button>
+  </section>
+
+  <!-- JavaScript Modular -->
+  <script src="javascript/config/api.js"></script>
+  <script src="javascript/utils/helpers.js"></script>
+  <script src="javascript/utils/apiClient.js"></script>
+  <script src="javascript/services/authService.js"></script>
+  <script src="javascript/services/watchlistService.js"></script>
+  <script src="javascript/services/journalService.js"></script>
+  <script src="javascript/components/authModal.js"></script>
+  <script src="javascript/components/journalModal.js"></script>
+  <script src="javascript/components/card.js"></script>
+  <script src="javascript/components/navbar.js"></script>
+  <script src="javascript/pages/home.js"></script>
+</body>
+</html>
