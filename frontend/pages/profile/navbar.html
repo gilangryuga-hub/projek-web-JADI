@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile Navigation & Sidebar - NetList</title>
+    <title>Naufal Dzaky - Profile | NetList</title>
 
     <!-- Font & ikon -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,7 +50,7 @@
           <button class="icon-btn" aria-label="Notifikasi">
             <i class="fa-regular fa-bell"></i>
           </button>
-          <div class="user-avatar" title="User Profile">U</div>
+          <div class="user-avatar" title="Naufal Dzaky">ND</div>
         </div>
       </header>
 
@@ -86,13 +86,12 @@
               <a href="#films" class="nav-link">
                 <i class="fa-solid fa-film nav-icon"></i>
                 <span>Films</span>
-                <span class="nav-badge">24</span>
               </a>
             </li>
 
             <!-- Diary film user -->
             <li>
-              <a href="#diary" class="nav-link">
+              <a href="#diary-section" class="nav-link">
                 <i class="fa-solid fa-book-bookmark nav-icon"></i>
                 <span>Diary</span>
               </a>
@@ -103,13 +102,12 @@
               <a href="#reviews" class="nav-link">
                 <i class="fa-solid fa-comment-dots nav-icon"></i>
                 <span>Reviews</span>
-                <span class="nav-badge">8</span>
               </a>
             </li>
 
             <!-- Film yang di-like user -->
             <li>
-              <a href="#likes" class="nav-link">
+              <a href="#favorites" class="nav-link">
                 <i class="fa-solid fa-heart nav-icon"></i>
                 <span>Likes</span>
               </a>
@@ -127,7 +125,7 @@
 
         <div class="sidebar-footer">
           <div class="profile-preview">
-            <div class="user-avatar sm">U</div>
+            <div class="user-avatar sm">ND</div>
             <div class="profile-info">
               <span class="profile-name">Naufal Dzaky</span>
               <span class="profile-role">Film Enthusiast</span>
@@ -136,27 +134,97 @@
         </div>
       </aside>
 
-      <!-- KONTEN UTAMA (Main Content) -->
-      <main class="main-content" id="main-content">
-        <div class="content-card">
-          <h1>Halaman Profil Pengguna</h1>
-          <p>
-            Menu navigasi aktif saat ini berada di <strong>Profile</strong>.
-            Gunakan tombol hamburger di kiri atas untuk menyembunyikan atau
-            memunculkan sidebar drawer ini di komputer maupun di HP!
-          </p>
+      <!-- KONTEN UTAMA PROFIL -->
+      <main class="main-content profile-main" id="main-content">
+        <div id="profile-status" class="profile-status" role="status">Memuat profil...</div>
+        <div id="profile-content" hidden>
+          <section class="profile-hero" aria-labelledby="profile-title">
+            <div class="profile-identity">
+              <div class="profile-avatar" id="profile-avatar"></div>
+              <div class="profile-intro">
+                <p class="profile-kicker">Film enthusiast</p>
+                <h1 id="profile-title"></h1>
+                <p class="profile-handle" id="profile-handle"></p>
+                <p class="profile-bio">Belum ada bio.</p>
+                <p class="profile-location"><i class="fa-solid fa-location-dot"></i> Indonesia</p>
+                <button class="profile-edit-btn" type="button" disabled><i class="fa-solid fa-pen"></i> Edit Profile</button>
+              </div>
+            </div>
+            <div class="profile-stats" aria-label="Statistik profil">
+              <div><strong id="stat-films">0</strong><span>Films</span></div>
+              <div><strong id="stat-year">0</strong><span>This year</span></div>
+              <div><strong>0</strong><span>Followers</span></div>
+              <div><strong>0</strong><span>Following</span></div>
+            </div>
+          </section>
+
+          <div class="profile-layout">
+            <div class="profile-feed">
+              <section class="profile-section collection-section" id="films" aria-labelledby="films-title">
+                <div class="section-heading">
+                  <div><p class="section-eyebrow">Your collection</p><h2 id="films-title">Films</h2></div>
+                  <span class="collection-count" id="films-count">0 films</span>
+                </div>
+                <div class="filter-toolbar" aria-label="Filter films">
+                  <label>Rating <select id="films-rating-filter"><option value="all">All ratings</option><option value="5">5 stars</option><option value="4">4+ stars</option><option value="3">3+ stars</option></select></label>
+                  <label>Status <select id="films-status-filter"><option value="watched">Watched</option><option value="watchlist">Watchlist</option><option value="all">All</option></select></label>
+                  <label>Sort <select id="films-sort"><option value="recent">Recently added</option><option value="name">Name</option><option value="rating">Rating</option></select></label>
+                </div>
+                <div class="films-grid" id="films-grid"></div>
+              </section>
+
+              <section class="profile-section favorites-section" id="favorites" aria-labelledby="favorites-title">
+                <div class="section-heading"><div><p class="section-eyebrow">Showcase</p><h2 id="favorites-title">Favorite Films</h2></div></div>
+                <div class="favorite-grid" id="favorite-grid"></div>
+              </section>
+
+              <section class="profile-section" id="activity" aria-labelledby="activity-title">
+                <div class="section-heading"><div><p class="section-eyebrow">Keep watching</p><h2 id="activity-title">Recent Activity</h2></div></div>
+                <div id="activity-list"></div>
+              </section>
+
+              <section class="profile-section" id="reviews" aria-labelledby="reviews-title">
+                <div class="section-heading"><div><p class="section-eyebrow">Thoughts on film</p><h2 id="reviews-title">Recent Reviews</h2></div></div>
+                <div id="review-list"></div>
+              </section>
+
+              <section class="profile-section diary-section" id="diary-section" aria-labelledby="diary-title">
+                <div class="section-heading"><div><p class="section-eyebrow">Your watch journal</p><h2 id="diary-title">Diary</h2></div><span class="collection-count" id="diary-count">0 entries</span></div>
+                <div class="filter-toolbar diary-filters" aria-label="Filter diary">
+                  <label>Year <select id="diary-year-filter"><option value="all">All years</option></select></label>
+                  <label>Rating <select id="diary-rating-filter"><option value="all">All ratings</option><option value="5">5 stars</option><option value="4">4+ stars</option><option value="3">3+ stars</option></select></label>
+                </div>
+                <div class="diary-table-wrap">
+                  <div class="diary-table" role="table" aria-label="Diary tontonan">
+                    <div class="diary-table-head" role="row"><span>Date</span><span>Film</span><span>Rating</span><span>Activity</span></div>
+                    <div id="diary-table-body"></div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <aside class="profile-sidebar" aria-label="Ringkasan profil">
+              <section class="sidebar-widget" id="diary"><div class="widget-heading"><h2>Diary</h2><a href="#diary-section">Open diary</a></div><div id="diary-list"></div></section>
+              <section class="sidebar-widget"><div class="widget-heading"><h2>Rating Distribution</h2></div><div class="rating-bars" id="rating-bars"></div></section>
+              <section class="sidebar-widget" id="tags"><div class="widget-heading"><h2>Favorite Tags</h2></div><div class="tag-list" id="tag-list"></div></section>
+              <section class="sidebar-widget" id="network"><div class="widget-heading"><h2>Following</h2></div><div class="empty-profile-widget">Belum ada data following.</div></section>
+            </aside>
+          </div>
         </div>
       </main>
 
     </div>
 
     <!-- JavaScript -->
+    <script src="../../javascript/config/api.js"></script>
     <script src="../../javascript/utils/apiClient.js"></script>
     <script src="../../javascript/services/authService.js"></script>
+    <script src="../../javascript/services/watchlistService.js"></script>
     <script src="../../javascript/services/journalService.js"></script>
     <script src="../../javascript/components/authModal.js"></script>
     <script src="../../javascript/components/journalModal.js"></script>
     <script src="../../javascript/utils/helpers.js"></script>
     <script src="../../javascript/pages/profile/navbar.js"></script>
+    <script src="../../javascript/pages/profile/profile.js"></script>
   </body>
 </html>

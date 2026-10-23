@@ -51,8 +51,8 @@ const AuthService = {
    */
   isAuthenticated() {
     return Boolean(
-      localStorage.getItem(API_CLIENT_CONFIG.accessTokenKey) ||
-      localStorage.getItem(API_CLIENT_CONFIG.refreshTokenKey)
+      localStorage.getItem(API_CONFIG.ACCESS_TOKEN_KEY) ||
+      localStorage.getItem(API_CONFIG.REFRESH_TOKEN_KEY)
     );
   }
 };

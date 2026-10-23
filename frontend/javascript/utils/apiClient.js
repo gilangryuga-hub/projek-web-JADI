@@ -1,8 +1,9 @@
-import { API_CONFIG } from '../config/api.js';
-
-// Menggunakan variabel dari config, bukan string hardcode
-export async function fetchData(endpoint) {
+// Client HTTP untuk API Django yang dipakai oleh semua halaman frontend.
+async function fetchData(endpoint) {
   const response = await fetch(`${API_CONFIG.DJANGO_BASE_URL}${endpoint}`);
+  if (!response.ok) {
+    throw new Error(`Gagal memuat data API (HTTP ${response.status}).`);
+  }
   return response.json();
 }
 
@@ -11,7 +12,7 @@ export async function fetchData(endpoint) {
  * @returns {string|null} Access token atau null jika belum login.
  */
 function getAccessToken() {
-  return localStorage.getItem(API_CLIENT_CONFIG.accessTokenKey);
+  return localStorage.getItem(API_CONFIG.ACCESS_TOKEN_KEY);
 }
 
 /**
@@ -19,8 +20,8 @@ function getAccessToken() {
  * @returns {void}
  */
 function clearAuthSession() {
-  localStorage.removeItem(API_CLIENT_CONFIG.accessTokenKey);
-  localStorage.removeItem(API_CLIENT_CONFIG.refreshTokenKey);
+  localStorage.removeItem(API_CONFIG.ACCESS_TOKEN_KEY);
+  localStorage.removeItem(API_CONFIG.REFRESH_TOKEN_KEY);
   window.dispatchEvent(new CustomEvent("auth:logout"));
 }
 
@@ -33,9 +34,9 @@ function saveAuthTokens(tokens) {
   if (!tokens || !tokens.access) {
     throw new Error("Respons autentikasi tidak berisi access token.");
   }
-  localStorage.setItem(API_CLIENT_CONFIG.accessTokenKey, tokens.access);
+  localStorage.setItem(API_CONFIG.ACCESS_TOKEN_KEY, tokens.access);
   if (tokens.refresh) {
-    localStorage.setItem(API_CLIENT_CONFIG.refreshTokenKey, tokens.refresh);
+    localStorage.setItem(API_CONFIG.REFRESH_TOKEN_KEY, tokens.refresh);
   }
 }
 
@@ -44,13 +45,11 @@ function saveAuthTokens(tokens) {
  * @returns {Promise<boolean>} True jika refresh berhasil.
  */
 async function refreshAccessToken() {
-  const refresh = localStorage.getItem(API_CLIENT_CONFIG.refreshTokenKey);
-  if (!refresh) {
-    return false;
-  }
+  const refresh = localStorage.getItem(API_CONFIG.REFRESH_TOKEN_KEY);
+  if (!refresh) return false;
 
   const response = await fetch(
-    `${API_CLIENT_CONFIG.baseUrl}/api/auth/token/refresh/`,
+    `${API_CONFIG.DJANGO_BASE_URL}/api/auth/token/refresh/`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -58,9 +57,7 @@ async function refreshAccessToken() {
     }
   );
 
-  if (!response.ok) {
-    return false;
-  }
+  if (!response.ok) return false;
 
   const tokens = await response.json();
   saveAuthTokens({ access: tokens.access });
@@ -68,7 +65,7 @@ async function refreshAccessToken() {
 }
 
 /**
- * Menjalankan request HTTP dengan Authorization Bearer otomatis.
+ * Menjalankan request HTTP dengan Authorization Bearer.
  * Request 401 akan di-refresh dan dicoba ulang satu kali.
  * @param {string} path - Path API, misalnya `/api/auth/me/`.
  * @param {RequestInit} [options={}] - Opsi native fetch.
@@ -84,13 +81,20 @@ async function apiRequest(path, options = {}, isRetry = false) {
 
   const accessToken = getAccessToken();
   if (accessToken) {
-    headers.set("Authorization", `Bearer ${accessToken}`);
+    headers.set("Authorization", "Bearer " + accessToken);
   }
 
-  const response = await fetch(`${API_CLIENT_CONFIG.baseUrl}${path}`, {
-    ...options,
-    headers
-  });
+  let response;
+  try {
+    response = await fetch(`${API_CONFIG.DJANGO_BASE_URL}${path}`, {
+      ...options,
+      headers
+    });
+  } catch (error) {
+    throw new Error(
+      `Backend tidak dapat dihubungi. Jalankan Django dengan "python manage.py runserver" dari folder backend.`
+    );
+  }
 
   if (response.status === 401 && !isRetry) {
     const refreshed = await refreshAccessToken();
@@ -111,8 +115,12 @@ async function apiRequest(path, options = {}, isRetry = false) {
     throw new Error(detail);
   }
 
-  if (response.status === 204) {
-    return null;
-  }
+  if (response.status === 204) return null;
   return response.json();
 }
+
+// File ini dimuat sebagai skrip biasa oleh semua halaman frontend.
+window.apiRequest = apiRequest;
+window.fetchData = fetchData;
+window.saveAuthTokens = saveAuthTokens;
+window.clearAuthSession = clearAuthSession;
