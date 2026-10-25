@@ -1,0 +1,68 @@
+.diary-table-wrap { overflow-x: auto; border: 1px solid rgba(255,255,255,.08); border-radius: 4px; }
+.diary-table { min-width: 580px; background: #1b2125; }
+
+.diary-table-head, 
+.diary-row { 
+  display: grid; 
+  grid-template-columns: 86px minmax(180px, 1fr) 110px 110px; 
+  align-items: center; 
+  gap: .8rem; 
+  padding: .75rem 1rem; 
+}
+
+.diary-table-head { 
+  color: #7f8a8f; 
+  border-bottom: 1px solid rgba(255,255,255,.1); 
+  font-size: .63rem; 
+  text-transform: uppercase; 
+  letter-spacing: .08em; 
+}
+
+.diary-row { min-height: 65px; border-bottom: 1px solid rgba(255,255,255,.07); }
+.diary-row:last-child { border-bottom: 0; }
+
+.diary-date { 
+  position: relative; 
+  width: 42px; 
+  padding: .35rem .2rem; 
+  border: 1px solid #3a4449; 
+  border-radius: 3px; 
+  text-align: center; 
+}
+
+.diary-date strong, 
+.diary-date span, 
+.diary-date small { display: block; line-height: 1; }
+.diary-date strong { color: #fff; font-size: 1rem; }
+.diary-date span { margin-top: .2rem; color: #00e054; font-size: .52rem; font-weight: 700; }
+.diary-date small { margin-top: .2rem; color: #7f8a8f; font-size: .5rem; }
+
+.diary-film strong, 
+.diary-film span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.diary-film strong { color: #e7ebec; font-size: .8rem; }
+.diary-film span { margin-top: .25rem; color: #7f8a8f; font-size: .65rem; }
+
+.diary-activity { display: flex; align-items: center; gap: .5rem; color: #59656b; font-size: .8rem; }
+.diary-activity .is-liked { color: #ff8000; }
+.rewatch-badge { padding: .2rem .35rem; border-radius: 3px; background: rgba(0,224,84,.12); color: #00e054; font-size: .55rem; }
+
+/* Diary Sidebar Widget */
+.diary-entry { display: flex; align-items: center; gap: .7rem; margin: .7rem 0; }
+.date-badge { 
+  width: 38px; 
+  height: 40px; 
+  flex: 0 0 38px; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  text-align: center; 
+  border: 1px solid #3a4449; 
+  border-radius: 3px; 
+}
+.date-badge strong { color: #fff; line-height: 1; font-size: .9rem; }
+.date-badge span { margin-top: .2rem; color: #00e054; font-size: .52rem; font-weight: 700; }
+.diary-entry > div:last-child { min-width: 0; }
+.diary-entry strong, 
+.diary-entry span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.diary-entry strong { color: #e7ebec; font-size: .77rem; }
+.diary-entry span { margin-top: .2rem; color: #8f999d; font-size: .65rem; }

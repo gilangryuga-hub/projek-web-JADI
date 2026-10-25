@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Films - NetList</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../../css/global.css" />
+    <link rel="stylesheet" href="../../css/pages/profile/navbar.css" />
+    <link rel="stylesheet" href="../../css/pages/profile/films.css" />
+  </head>
+  <body>
+    <div class="navbar-container">
+      <header class="top-bar">
+        <button
+          id="sidebar-toggle"
+          class="menu-btn"
+          type="button"
+          aria-label="Toggle Sidebar"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span></button
+        ><a href="../../index.html" class="top-bar__logo">Net<em>List</em></a>
+        <div class="top-bar__search">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i
+          ><input type="text" placeholder="Search in profile..." />
+        </div>
+        <div class="top-bar__actions">
+          <button class="icon-btn" aria-label="Notifikasi">
+            <i class="fa-regular fa-bell"></i>
+          </button>
+          <div class="user-avatar">ND</div>
+        </div>
+      </header>
+      <div id="sidebar-overlay" class="sidebar-overlay"></div>
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <p class="sidebar-title">Menu Profil</p>
+        </div>
+        <nav id="main-nav" aria-label="Navigasi Utama">
+          <ul class="nav-list">
+            <li>
+              <a href="../../index.html" class="nav-link"
+                ><i class="fa-solid fa-house nav-icon"></i><span>Home</span></a
+              >
+            </li>
+            <li>
+              <a href="profile.html" class="nav-link"
+                ><i class="fa-solid fa-user nav-icon"></i
+                ><span>Profile</span></a
+              >
+            </li>
+            <li>
+              <a
+                href="films.html"
+                class="nav-link is-active"
+                aria-current="page"
+                ><i class="fa-solid fa-film nav-icon"></i><span>Films</span></a
+              >
+            </li>
+            <li>
+              <a href="diary.html" class="nav-link"
+                ><i class="fa-solid fa-book-bookmark nav-icon"></i
+                ><span>Diary</span></a
+              >
+            </li>
+            <li>
+              <a href="reviews.html" class="nav-link"
+                ><i class="fa-solid fa-comment-dots nav-icon"></i
+                ><span>Reviews</span></a
+              >
+            </li>
+            <li>
+              <a href="likes.html" class="nav-link"
+                ><i class="fa-solid fa-heart nav-icon"></i><span>Likes</span></a
+              >
+            </li>
+            <li>
+              <a href="network.html" class="nav-link"
+                ><i class="fa-solid fa-user-group nav-icon"></i
+                ><span>Network</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="profile-preview">
+            <div class="user-avatar sm">ND</div>
+            <div class="profile-info">
+              <span class="profile-name">Naufal Dzaky</span
+              ><span class="profile-role">Film Enthusiast</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <main class="main-content profile-main">
+        <div id="profile-status" class="profile-status" role="status">
+          Memuat films...
+        </div>
+        <div id="profile-content" hidden>
+          <section class="profile-section feature-page">
+            <div class="section-heading">
+              <div>
+                <p class="section-eyebrow">Your collection</p>
+                <h1>Films</h1>
+              </div>
+              <span class="collection-count" id="films-count">0 films</span>
+            </div>
+            <div class="filter-toolbar">
+              <label
+                >Rating
+                <select id="films-rating-filter">
+                  <option value="all">All ratings</option>
+                  <option value="5">5 stars</option>
+                  <option value="4">4+ stars</option>
+                  <option value="3">3+ stars</option>
+                </select></label
+              ><label
+                >Status
+                <select id="films-status-filter">
+                  <option value="watched">Watched</option>
+                  <option value="watchlist">Watchlist</option>
+                  <option value="all">All</option>
+                </select></label
+              ><label
+                >Sort
+                <select id="films-sort">
+                  <option value="recent">Recently added</option>
+                  <option value="name">Name</option>
+                  <option value="rating">Rating</option>
+                </select></label
+              >
+            </div>
+            <div class="films-grid" id="films-grid"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script src="../../javascript/config/api.js"></script>
+    <script src="../../javascript/utils/helpers.js"></script>
+    <script src="../../javascript/utils/apiClient.js"></script>
+    <script src="../../javascript/services/authService.js"></script>
+    <script src="../../javascript/services/watchlistService.js"></script>
+    <script src="../../javascript/services/journalService.js"></script>
+    <script src="../../javascript/components/authModal.js"></script>
+    <script src="../../javascript/pages/profile/navbar.js"></script>
+    <script src="../../javascript/pages/profile/profile-data.js"></script>
+    <script src="../../javascript/pages/profile/films.js"></script>
+  </body>
+</html>

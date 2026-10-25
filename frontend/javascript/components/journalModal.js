@@ -20,9 +20,29 @@ function initJournalModal() {
         </label>
         <label>Tanggal menonton<input name="watched_date" type="date" required></label>
         <label>Catatan<textarea name="notes" rows="4"></textarea></label>
-        <label><input name="is_rewatch" type="checkbox"> Rewatch</label>
-        <label><input name="is_liked" type="checkbox"> Disukai</label>
-        <label><input name="contains_spoilers" type="checkbox"> Mengandung spoiler</label>
+        
+        <!-- BAGIAN CHECKBOX YANG DIPERBARUI -->
+        <div class="options-group">
+          <label class="opt--rewatch">
+            <input name="is_rewatch" type="checkbox">
+            <i class="fa-solid fa-rotate-right opt-icon"></i>
+            <span>Rewatch</span>
+          </label>
+          
+          <label class="opt--like">
+            <input name="is_liked" type="checkbox">
+            <i class="fa-solid fa-heart opt-icon"></i>
+            <span>Disukai</span>
+          </label>
+          
+          <label class="opt--spoiler">
+            <input name="contains_spoilers" type="checkbox">
+            <i class="fa-solid fa-eye-slash opt-icon"></i>
+            <span>Spoiler</span> <!-- Diperpendek agar muat horizontal -->
+          </label>
+        </div>
+        <!-- ================================================= -->
+        
         <p class="app-modal__error" data-journal-error role="alert"></p>
         <button type="submit" class="btn-primary">Simpan</button>
       </form>
@@ -58,11 +78,12 @@ function initJournalModal() {
     modal.hidden = true;
   }
 
-  modal.addEventListener("click", event => {
-    if (event.target === modal || event.target.closest("[data-journal-close]")) close();
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal || event.target.closest("[data-journal-close]"))
+      close();
   });
 
-  form.addEventListener("submit", async event => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     error.textContent = "";
     const data = Object.fromEntries(new FormData(form));

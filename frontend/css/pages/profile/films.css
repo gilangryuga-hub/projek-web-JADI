@@ -1,0 +1,108 @@
+.filter-toolbar { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: .6rem; 
+  margin: 0 0 1.1rem; 
+  padding: .7rem; 
+  border: 1px solid rgba(255,255,255,.08); 
+  border-radius: 4px; 
+  background: #1b2125; 
+}
+
+.filter-toolbar label { 
+  display: flex; 
+  align-items: center; 
+  gap: .4rem; 
+  color: #8f999d; 
+  font-size: .68rem; 
+}
+
+.filter-toolbar select { 
+  border: 1px solid #3a4449; 
+  border-radius: 3px; 
+  padding: .38rem .55rem; 
+  background: #252d31; 
+  color: #e7ebec; 
+  font: inherit; 
+  font-size: .7rem; 
+  cursor: pointer; 
+}
+
+.films-grid { 
+  display: grid; 
+  grid-template-columns: repeat(5, minmax(0, 1fr)); 
+  gap: 1rem .75rem; 
+}
+
+.film-tile { 
+  min-width: 0; 
+  color: #f5f7f8; 
+  text-decoration: none; 
+}
+
+.film-tile-poster { 
+  position: relative; 
+  overflow: hidden; 
+  aspect-ratio: 2 / 3; 
+  border-radius: 3px; 
+  background: #252d31; 
+}
+
+.film-tile-poster img { 
+  width: 100%; 
+  height: 100%; 
+  display: block; 
+  object-fit: cover; 
+  transition: transform .22s ease; 
+}
+
+.film-tile-poster > i { 
+  display: grid; 
+  height: 100%; 
+  place-items: center; 
+  color: #59656b; 
+  font-size: 1.6rem; 
+}
+
+.film-tile-overlay { 
+  position: absolute; 
+  inset: auto 0 0; 
+  padding: .55rem .45rem .4rem; 
+  transform: translateY(100%); 
+  background: linear-gradient(transparent, rgba(0,0,0,.9)); 
+  color: #00e054; 
+  font-size: .62rem; 
+  transition: transform .2s ease; 
+}
+
+.film-tile:hover .film-tile-poster img { transform: scale(1.06); }
+.film-tile:hover .film-tile-overlay { transform: translateY(0); }
+
+.film-tile > strong, 
+.film-tile > span { 
+  display: block; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+}
+
+.film-tile > strong { margin-top: .55rem; font-size: .76rem; }
+.film-tile > span { margin-top: .25rem; color: #8f999d; font-size: .65rem; }
+.film-tile .rating-stars { color: #00e054; }
+
+.favorite-grid { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: .85rem; 
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .films-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .films-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem .7rem; }
+  .favorite-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem .7rem; }
+  .filter-toolbar label { flex: 1 1 42%; flex-direction: column; align-items: stretch; }
+}

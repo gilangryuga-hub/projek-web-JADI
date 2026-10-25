@@ -1,0 +1,377 @@
+.profile-main {
+  background: #14181c;
+  color: #f5f7f8;
+  padding-right: clamp(1rem, 4vw, 4rem);
+  padding-left: clamp(1rem, 4vw, 4rem);
+}
+
+.profile-status {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: #1b2125;
+  color: #c3cbce;
+  line-height: 1.6;
+}
+.profile-status h1 {
+  margin: 0 0 0.5rem;
+  color: #fff;
+  font-size: 1.35rem;
+}
+.profile-status p {
+  margin: 0 0 1rem;
+}
+.profile-login-btn {
+  border: 0;
+  border-radius: 4px;
+  padding: 0.65rem 1rem;
+  background: #00e054;
+  color: #14181c;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+.profile-empty,
+.empty-profile-widget {
+  margin: 0;
+  color: #7f8a8f;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+.collection-count {
+  color: #8f999d;
+  font-size: 0.72rem;
+}
+
+.profile-hero {
+  max-width: 1240px;
+  margin: 0 auto 2rem;
+  padding: 2rem 0 1.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.profile-identity {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+.profile-avatar {
+  width: 104px;
+  height: 104px;
+  flex: 0 0 104px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #14181c;
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(145deg, #00e054, #7fffb0);
+  /* Diperbarui: Cincin avatar yang lebih tajam dan premium */
+  border: 3px solid #14181c;
+  box-shadow: 0 0 0 2px rgba(0, 224, 84, 0.4);
+}
+.profile-kicker,
+.section-eyebrow {
+  margin: 0 0 0.25rem;
+  color: #00e054;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 700;
+}
+.profile-intro h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  letter-spacing: -0.04em;
+}
+.profile-handle {
+  margin: 0.15rem 0 0.7rem;
+  color: #9da7ab;
+  font-size: 0.9rem;
+}
+.profile-bio {
+  max-width: 560px;
+  margin: 0 0 0.7rem;
+  color: #d5dadd;
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+.profile-location {
+  margin: 0 0 1rem;
+  color: #8f999d;
+  font-size: 0.78rem;
+}
+.profile-location i {
+  color: #00e054;
+  margin-right: 0.35rem;
+}
+.profile-location span {
+  margin: 0 0.4rem;
+  color: #7f8a8f;
+}
+.profile-edit-btn,
+.text-action {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: transparent;
+  color: #dce2e4;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background 0.2s;
+}
+.profile-edit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.profile-edit-btn:hover,
+.text-action:hover {
+  border-color: #00e054;
+  color: #00e054;
+  background: rgba(0, 224, 84, 0.08);
+}
+.profile-edit-btn i {
+  margin-right: 0.35rem;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(60px, 1fr));
+  gap: 1.2rem;
+  align-self: flex-start;
+}
+.profile-stats div {
+  min-width: 64px;
+  text-align: center;
+}
+.profile-stats strong {
+  display: block;
+  color: #fff;
+  font-size: 1.35rem;
+}
+.profile-stats span {
+  display: block;
+  margin-top: 0.25rem;
+  color: #8f999d;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.profile-layout {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: 2.4rem;
+}
+.profile-section {
+  margin-bottom: 2.5rem;
+}
+.section-heading,
+.widget-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.section-heading h2,
+.widget-heading h2 {
+  margin: 0;
+  color: #f5f7f8;
+  font-size: 1.25rem;
+  letter-spacing: -0.025em;
+}
+.text-action {
+  border: 0;
+  padding: 0.2rem 0;
+  color: #9da7ab;
+  font-size: 0.72rem;
+}
+.text-action i {
+  margin-left: 0.35rem;
+  color: #00e054;
+}
+
+.poster-card {
+  min-width: 0;
+  color: #f5f7f8;
+  text-decoration: none;
+}
+.poster-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #252c30;
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.poster-card:hover img {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 224, 84, 0.3);
+}
+.poster-card span {
+  display: block;
+  overflow: hidden;
+  margin-top: 0.55rem;
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rating-stars {
+  color: #00e054;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.rating-stars span {
+  color: #475055;
+  display: inline;
+}
+
+.profile-sidebar {
+  min-width: 0;
+}
+.sidebar-widget {
+  margin-bottom: 2rem;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.widget-heading {
+  align-items: baseline;
+  margin-bottom: 0.9rem;
+}
+.widget-heading h2 {
+  font-size: 0.95rem;
+}
+.widget-heading a {
+  color: #00e054;
+  font-size: 0.68rem;
+  text-decoration: none;
+}
+
+.rating-bars > div {
+  display: grid;
+  grid-template-columns: 12px 1fr 24px;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  color: #9da7ab;
+  font-size: 0.68rem;
+}
+.rating-bars > div > div {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #2d363b;
+}
+.rating-bars i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #00e054;
+}
+.rating-bars b {
+  color: #d5dadd;
+  font-size: 0.65rem;
+  font-weight: 400;
+  text-align: right;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.tag-list a {
+  padding: 0.35rem 0.5rem;
+  border-radius: 3px;
+  background: #252d31;
+  color: #b8c1c4;
+  font-size: 0.68rem;
+  text-decoration: none;
+}
+.tag-list a:hover {
+  color: #00e054;
+  background: rgba(0, 224, 84, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .profile-hero {
+    flex-direction: column;
+  }
+  .profile-stats {
+    align-self: stretch;
+    max-width: 480px;
+  }
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+  .profile-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1.5rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .profile-main { padding-left: 1rem; padding-right: 1rem; padding-top: calc(var(--topbar-h) + 1rem); }
+  .profile-hero { padding-top: 0; flex-direction: column; gap: 1.5rem; }
+  .profile-status { padding: 1.25rem; margin: 1rem 0; }
+
+  .profile-identity { 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center; 
+    gap: 1rem; 
+  }
+
+  /* 3. Kunci Flexbox: Cegah teks panjang (bio/username) memicu horizontal scroll */
+  .profile-identity > div:not(.profile-avatar) {
+    width: 100%;
+    min-width: 0; 
+  }
+
+  /* 4. Avatar & Tipografi: Sesuaikan proporsi mobile */
+  .profile-avatar { 
+    width: 88px; height: 88px; flex-basis: 88px; font-size: 1.6rem; 
+    border-width: 2px;
+  }
+  .profile-intro h1 { font-size: 1.5rem; }
+  .profile-bio { font-size: .85rem; margin: 0 auto .75rem; max-width: 100%; }
+  
+  /* Posisikan ikon lokasi tepat di tengah */
+  .profile-location { display: flex; justify-content: center; align-items: center; }
+
+  /* 5. Stats: Sesuaikan gap agar 4 kolom tetap rapi di layar 320px */
+  .profile-stats { 
+    gap: .5rem; 
+    align-self: center; /* Rata tengah mengikuti identitas */
+    width: 100%;
+  }
+  .profile-stats div { min-width: 0; } /* Reset min-width bawaan */
+  .profile-stats strong { font-size: 1.15rem; }
+  .profile-stats span { font-size: .65rem; }
+
+  .profile-sidebar { display: block; }
+  .sidebar-widget { margin-bottom: 1.5rem; }
+}
