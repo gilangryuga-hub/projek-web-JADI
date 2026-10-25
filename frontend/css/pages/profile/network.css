@@ -1,0 +1,25 @@
+.following-list { 
+  display: grid; 
+  grid-template-columns: 30px 1fr; 
+  align-items: center; 
+  gap: .7rem .6rem; 
+}
+
+.following-avatar { 
+  width: 30px; 
+  height: 30px; 
+  display: grid; 
+  place-items: center; 
+  border-radius: 50%; 
+  background: #8e5b35; 
+  color: #fff; 
+  font-size: .58rem; 
+  font-weight: 700; 
+}
+
+.following-avatar--pink { background: #9d4e71; }
+
+.following-list strong, 
+.following-list span { display: block; }
+.following-list strong { color: #e7ebec; font-size: .73rem; }
+.following-list span { margin-top: .15rem; color: #8f999d; font-size: .64rem; }

@@ -16,8 +16,12 @@
 }
 
 @keyframes modalBackdropFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Dialog Box */
@@ -30,7 +34,10 @@
   border-radius: var(--radius-lg, 18px);
   background: linear-gradient(165deg, #131730 0%, #0c0f22 100%);
   border: 1px solid var(--surface-border, rgba(255, 255, 255, 0.14));
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.05), var(--shadow-accent, 0 8px 30px rgba(74, 110, 224, 0.15));
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    var(--shadow-accent, 0 8px 30px rgba(74, 110, 224, 0.15));
   color: var(--text, #ffffff);
   font-family: var(--font);
   animation: modalDialogPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -204,7 +211,10 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-md, 12px);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .auth-input-group:focus-within {
@@ -293,7 +303,10 @@
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 8px 22px rgba(74, 110, 224, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
 }
 
 .btn-auth-submit:hover,
@@ -345,98 +358,262 @@
   color: #7b99ff;
 }
 
-/* ==========================================================================
-   STYLE FORM UMUM / MODAL JURNAL (Kompatibilitas Penuh)
-   ========================================================================== */
 .app-modal__dialog h2:not(.auth-title) {
   font-size: 20px;
   font-weight: 700;
-  margin-bottom: 16px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin-bottom: 18px;
   color: var(--text);
 }
 
+/* --- Form --------------------------------------------------------------- */
 .app-modal__dialog form:not(.auth-form) {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 .app-modal__dialog form:not(.auth-form) label {
   display: grid;
   gap: 6px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.88);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text);
 }
 
+/* --- Input & textarea --------------------------------------------------- */
+.options-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
 .app-modal__dialog form:not(.auth-form) input:not([type="checkbox"]),
 .app-modal__dialog form:not(.auth-form) textarea {
   width: 100%;
+  min-height: 44px; /* target sentuh nyaman */
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  /* sedikit lebih terang agar batas field terbaca (WCAG 1.4.11) */
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: var(--radius-sm, 8px);
   color: var(--text);
   font-family: inherit;
   font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  line-height: 1.5;
+  /* outline transparan: tetap terlihat di Windows High Contrast Mode */
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 
-.app-modal__dialog form:not(.auth-form) input:focus,
+.app-modal__dialog form:not(.auth-form) textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.app-modal__dialog
+  form:not(.auth-form)
+  input:not([type="checkbox"])::placeholder,
+.app-modal__dialog form:not(.auth-form) textarea::placeholder {
+  color: var(--text-muted, rgba(255, 255, 255, 0.65));
+  opacity: 0.75;
+}
+
+.app-modal__dialog form:not(.auth-form) input:not([type="checkbox"]):hover,
+.app-modal__dialog form:not(.auth-form) textarea:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.app-modal__dialog form:not(.auth-form) input:not([type="checkbox"]):focus,
 .app-modal__dialog form:not(.auth-form) textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(74, 110, 224, 0.25);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* Error: pakai aria-invalid="true" pada field + <p class="field-error"> di
+   bawahnya. Status tidak hanya lewat warna (ada teks pesan). */
+.app-modal__dialog form:not(.auth-form) [aria-invalid="true"] {
+  border-color: #f0627f;
+}
+
+.app-modal__dialog form:not(.auth-form) .field-error {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #ff8fa6;
+}
+
+.app-modal__dialog form:not(.auth-form) input:disabled,
+.app-modal__dialog form:not(.auth-form) textarea:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .app-modal__dialog form:not(.auth-form) label:has(input[type="checkbox"]) {
+  --opt-color: var(--accent);
   display: flex;
+  flex: 1; /* Membagi rata 3 kotak */
+  flex-direction: column; /* Ikon di atas, teks di bawah */
+  justify-content: center;
   align-items: center;
-  gap: 8px;
+  text-align: center;
+  gap: 6px;
+  min-height: 72px; /* Ditinggikan sedikit agar proporsional */
+  padding: 12px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-sm, 8px);
+  background: rgba(255, 255, 255, 0.03);
   cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.app-modal__dialog form:not(.auth-form) label:has(input[type="checkbox"]) span {
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.app-modal__dialog form:not(.auth-form) label.opt--like {
+  --opt-color: #f0627f;
+}
+.app-modal__dialog form:not(.auth-form) label.opt--rewatch {
+  --opt-color: var(--accent);
+}
+.app-modal__dialog form:not(.auth-form) label.opt--spoiler {
+  --opt-color: #f5b84b;
+}
+
+.app-modal__dialog
+  form:not(.auth-form)
+  label:has(input[type="checkbox"]):hover {
+  border-color: color-mix(in srgb, var(--opt-color) 60%, transparent);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.app-modal__dialog
+  form:not(.auth-form)
+  label:has(input[type="checkbox"]:checked) {
+  border-color: var(--opt-color);
+  background: color-mix(in srgb, var(--opt-color) 14%, transparent);
+}
+
+.app-modal__dialog
+  form:not(.auth-form)
+  label:has(input[type="checkbox"]:focus-visible) {
+  outline: 2px solid var(--opt-color);
+  outline-offset: 2px;
 }
 
 .app-modal__dialog form:not(.auth-form) input[type="checkbox"] {
-  accent-color: var(--accent);
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none; /* Mencegah klik nyasar ke kotak asli */
 }
 
-/* Tampilan Empty State Watchlist jika belum login */
+.opt-icon {
+  flex: none;
+  font-size: 18px; /* Menggantikan width/height SVG */
+  width: 20px;
+  text-align: center;
+  color: var(--opt-color, var(--accent));
+  opacity: 0.6; /* Dibuat sedikit lebih redup saat belum dicentang */
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Saat dicentang, ikon "terisi" agar status terlihat selain lewat warna */
+.app-modal__dialog form:not(.auth-form) label:has(input:checked) .opt-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+.app-modal__dialog
+  form:not(.auth-form)
+  label.opt--like:has(input:checked)
+  .opt-icon {
+  fill: currentColor;
+}
+
+/* --- Empty state watchlist (belum login) -------------------------------- */
 .watchlist-empty-auth {
   text-align: center;
   padding: 48px 24px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border: 1px dashed rgba(255, 255, 255, 0.22);
   border-radius: var(--radius-lg, 18px);
   max-width: 480px;
   margin: 40px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .watchlist-empty-auth .empty-auth-icon {
-  font-size: 44px;
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  font-size: 36px;
+  line-height: 1;
   color: var(--accent);
-  opacity: 0.85;
+  opacity: 1;
+}
+
+.watchlist-empty-auth .empty-auth-icon svg {
+  width: 36px;
+  height: 36px;
 }
 
 .watchlist-empty-auth h2 {
+  margin: 0;
   font-size: 20px;
   font-weight: 700;
+  line-height: 1.3;
   color: var(--text);
 }
 
 .watchlist-empty-auth p {
+  margin: 0;
   font-size: 14px;
+  line-height: 1.6;
   color: var(--text-muted, rgba(255, 255, 255, 0.65));
   max-width: 360px;
-  line-height: 1.5;
 }
 
 .watchlist-empty-auth button {
   width: auto;
   min-width: 180px;
-  margin-top: 6px;
+  min-height: 44px;
+  margin-top: 10px;
+}
+
+/* --- Responsive (layar sempit, mulai 320px) ------------------------------ */
+@media (max-width: 480px) {
+  .watchlist-empty-auth {
+    margin: 24px 16px;
+    padding: 36px 20px;
+  }
+
+  .watchlist-empty-auth button {
+    width: 100%;
+  }
+}
+
+/* --- Hormati preferensi kurangi animasi ---------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .app-modal__dialog form:not(.auth-form) input,
+  .app-modal__dialog form:not(.auth-form) textarea,
+  .app-modal__dialog form:not(.auth-form) label:has(input[type="checkbox"]) {
+    transition: none;
+  }
 }
