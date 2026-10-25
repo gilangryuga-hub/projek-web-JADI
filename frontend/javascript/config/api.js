@@ -12,5 +12,10 @@ const API_CONFIG = {
   REFRESH_TOKEN_KEY: "netlist_refresh_token",
 };
 
+// frontend/javascript/config/api.js
+const ENDPOINTS = {
+  trendingWeekly: '/trending/movie/week',
+};
+
 window.TMDB_CONFIG = TMDB_CONFIG;
 window.API_CONFIG = API_CONFIG;

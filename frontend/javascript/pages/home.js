@@ -1,9 +1,3 @@
-/**
- * ============================================================================
- * HALAMAN: HOME (index.html)
- * ============================================================================
- */
-
 // State Halaman
 let heroMovies = [];        // Daftar film untuk banner (hero)
 let heroIndex = 0;          // Indeks film yang aktif di hero
@@ -46,18 +40,59 @@ function showGrid(movies, append = false) {
   }
 }
 
+// Top 10 Weekly
+async function fetchTop10Weekly() {
+  try {
+    const top10Grid = document.getElementById('top-10-grid');
+    if (!top10Grid) return;
+
+    // 1. Fetch data dari TMDB API
+    const url = `${TMDB_CONFIG.BASE_URL}/trending/movie/week?api_key=${TMDB_CONFIG.API_KEY}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const top10Movies = data.results.slice(0, 10);
+
+    top10Grid.innerHTML = ''; // Bersihkan container
+
+    const parser = new DOMParser();
+
+    // 2. Parse string HTML kartu menjadi DOM Element lalu tambahkan badge
+    top10Movies.forEach((movie, index) => {
+      const cardHtmlString = createCardHTML(movie, "movie");
+      const doc = parser.parseFromString(cardHtmlString, "text/html");
+      const cardElement = doc.body.firstElementChild;
+
+      // Buat dan tempelkan elemen badge ke dalam kartu
+      const rankBadge = document.createElement("span");
+      rankBadge.className = "rank-badge";
+      rankBadge.textContent = `#${index + 1}`;
+      cardElement.appendChild(rankBadge);
+
+      top10Grid.appendChild(cardElement);
+    });
+
+    // 3. Pasang event listener untuk klik detail & bookmark
+    attachCardListeners(top10Grid);
+
+  } catch (error) {
+    console.error('Error fetching top 10 movies:', error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetchTop10Weekly();
+});
 // Inisialisasi event listener kartu film (buka detail & toggle bookmark)
 attachCardListeners(grid, (toggledId) => {
   if (toggledId === currentHeroId) {
     updateHeroWatchlistButton();
   }
 });
-
-// ===== HERO BANNER =====
-function updateHeroWatchlistButton() {
-  if (!btnHeroWatchlist || !currentHeroId) return;
-  btnHeroWatchlist.classList.toggle("active", WatchlistService.has("movie", currentHeroId));
-}
 
 async function showHero(index) {
   if (!heroMovies.length) return;
@@ -66,8 +101,14 @@ async function showHero(index) {
   const movie = heroMovies[heroIndex];
   currentHeroId = movie.id;
 
-  // Tampilkan data awal yang sudah tersedia
+  // 1. Tampilkan data awal yang sudah tersedia
   heroEl.style.setProperty("--hero-bg", `url(${TMDB_CONFIG.IMG_BACKDROP + movie.backdrop_path})`);
+
+  heroEl.classList.remove("fade-transition");
+  void heroEl.offsetWidth; 
+  heroEl.classList.add("fade-transition");
+  // -----------------------------------------------------
+
   heroTitle.textContent = movie.title;
   heroTitle.style.cursor = "pointer";
   heroTitle.onclick = () => location.href = getPageUrl(`detail.html?type=movie&id=${movie.id}`);
@@ -195,3 +236,45 @@ function loadPopular() {
   }
   loadPopular();
 })();
+
+// 1. Deklarasikan variabel interval timer di tingkat global/scope fungsi hero
+let autoSlideInterval = null;
+const SLIDE_DELAY = 3000; 
+
+// 2. Fungsi untuk berpindah ke slide/film berikutnya
+function nextSlide() {
+  // Panggil fungsi perubahan slide ke kanan yang sudah ada di home.js kamu
+  // Contoh: jika tombol next dipicu dengan event click:
+  const btnNext = document.getElementById('btn-next');
+  if (btnNext) {
+    btnNext.click();
+  }
+}
+
+// 3. Fungsi untuk memulai auto slide
+function startAutoSlide() {
+  // Pastikan tidak ada interval ganda yang berjalan
+  stopAutoSlide();
+  autoSlideInterval = setInterval(nextSlide, SLIDE_DELAY);
+}
+
+// 4. Fungsi untuk menghentikan auto slide (misal saat kursor berada di atas hero)
+function stopAutoSlide() {
+  if (autoSlideInterval) {
+    clearInterval(autoSlideInterval);
+    autoSlideInterval = null;
+  }
+}
+
+// 5. Jalankan timer saat halaman dan data Hero selesai dimuat
+document.addEventListener('DOMContentLoaded', () => {
+  // Panggil startAutoSlide setelah data film hero berhasil di-fetch
+  startAutoSlide();
+  // (UX ENHANCEMENT) Hentikan auto slide saat mouse hover di area hero,
+  // lalu jalankan lagi saat kursor keluar (agar user nyaman membaca deskripsi/klik trailer)
+  const heroSection = document.getElementById('hero');
+  if (heroSection) {
+    heroSection.addEventListener('mouseenter', stopAutoSlide);
+    heroSection.addEventListener('mouseleave', startAutoSlide);
+  }
+});
