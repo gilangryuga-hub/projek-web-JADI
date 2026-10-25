@@ -1,12 +1,4 @@
 /**
- * ============================================================================
- * KOMPONEN KARTU FILM & SERIES (Card Component)
- * ============================================================================
- * Menyediakan fungsi render HTML kartu film serta penanganan event klik
- * untuk navigasi ke detail dan bookmark watchlist.
- */
-
-/**
  * Membuat string HTML untuk satu kartu film atau series.
  * @param {object} item - Data film dari TMDB
  * @param {string} type - 'movie' atau 'tv'
