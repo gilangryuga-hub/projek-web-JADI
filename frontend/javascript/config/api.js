@@ -7,7 +7,7 @@ const TMDB_CONFIG = {
 };
 
 const API_CONFIG = {
-  DJANGO_BASE_URL: "http://127.0.0.1:8000",
+  DJANGO_BASE_URL: "https://muhammadnaufaldzaky.pythonanywhere.com",
   ACCESS_TOKEN_KEY: "netlist_access_token",
   REFRESH_TOKEN_KEY: "netlist_refresh_token",
 };
