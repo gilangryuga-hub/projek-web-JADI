@@ -13,6 +13,10 @@ function initProfilePage() {
 
   const emptyState = message => `<p class="profile-empty">${escapeHtml(message)}</p>`;
   const posterUrl = path => path ? `${PROFILE_IMAGE_BASE}${path}` : "";
+  const avatarUrl = path => {
+    if (!path) return "";
+    return path.startsWith("http") ? path : `${API_CONFIG.DJANGO_BASE_URL}${path}`;
+  };
   const formatDate = value => {
     if (!value) return "-";
     return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" })
@@ -77,15 +81,21 @@ function initProfilePage() {
   function renderProfile(user, journals, watchlist) {
     const username = user.username || "Pengguna";
     const initials = username.slice(0, 2).toUpperCase();
+    const profile = user.profile || {};
     const currentYear = new Date().getFullYear();
     const liked = journals.filter(item => item.is_liked);
     profileJournals = journals;
     profileWatchlist = watchlist;
     const uniqueFilms = new Set(journals.map(item => `${item.media_type}:${item.tmdb_id}`));
 
-    document.getElementById("profile-avatar").textContent = initials;
+    const profileAvatar = document.getElementById("profile-avatar");
+    profileAvatar.textContent = profile.avatar_url ? "" : initials;
+    profileAvatar.style.backgroundImage = profile.avatar_url
+      ? `url("${avatarUrl(profile.avatar_url)}")`
+      : "";
     document.getElementById("profile-title").textContent = username;
     document.getElementById("profile-handle").textContent = `@${username}`;
+    document.querySelector(".profile-bio").textContent = profile.bio || "Belum ada bio.";
     document.querySelector(".top-bar .user-avatar").textContent = initials;
     document.querySelector(".sidebar-footer .user-avatar").textContent = initials;
     document.querySelector(".sidebar-footer .profile-name").textContent = username;
@@ -129,6 +139,88 @@ function initProfilePage() {
     renderDiaryTable();
   }
 
+  function setupProfileEditor() {
+    const editButton = document.querySelector(".profile-edit-btn");
+    if (!editButton || document.getElementById("profile-edit-modal")) return;
+
+    const modal = document.createElement("div");
+    modal.id = "profile-edit-modal";
+    modal.className = "profile-edit-modal";
+    modal.hidden = true;
+    modal.innerHTML = `
+      <div class="profile-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-edit-title">
+        <button type="button" class="profile-edit-close" aria-label="Tutup">&times;</button>
+        <h2 id="profile-edit-title">Edit Profile</h2>
+        <form class="profile-edit-form">
+          <label>Bio<textarea name="bio" maxlength="500" rows="4" placeholder="Ceritakan sedikit tentang kamu"></textarea></label>
+          <label>Foto profile<input name="avatar" type="file" accept="image/jpeg,image/png,image/webp"></label>
+          <p class="profile-edit-hint">JPG, PNG, atau WebP. Maksimal 5 MB.</p>
+          <p class="profile-edit-error" role="alert" hidden></p>
+          <div class="profile-edit-actions">
+            <button type="button" class="profile-edit-cancel">Batal</button>
+            <button type="submit" class="profile-edit-save">Simpan</button>
+          </div>
+        </form>
+      </div>`;
+    document.body.appendChild(modal);
+
+    const form = modal.querySelector("form");
+    const bioInput = form.querySelector("[name=bio]");
+    const avatarInput = form.querySelector("[name=avatar]");
+    const error = modal.querySelector(".profile-edit-error");
+    const close = () => {
+      modal.hidden = true;
+      document.body.style.overflow = "";
+    };
+
+    editButton.disabled = false;
+    editButton.addEventListener("click", () => {
+      const profile = window.currentProfileUser?.profile || {};
+      bioInput.value = profile.bio || document.querySelector(".profile-bio").textContent;
+      avatarInput.value = "";
+      error.hidden = true;
+      modal.hidden = false;
+      document.body.style.overflow = "hidden";
+      bioInput.focus();
+    });
+    modal.querySelector(".profile-edit-close").addEventListener("click", close);
+    modal.querySelector(".profile-edit-cancel").addEventListener("click", close);
+    modal.addEventListener("click", event => {
+      if (event.target === modal) close();
+    });
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      const file = avatarInput.files[0];
+      if (file && file.size > 5 * 1024 * 1024) {
+        error.textContent = "Ukuran foto maksimal 5 MB.";
+        error.hidden = false;
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("bio", bioInput.value.trim());
+      if (file) formData.append("avatar", file);
+
+      const saveButton = form.querySelector(".profile-edit-save");
+      saveButton.disabled = true;
+      error.hidden = true;
+      try {
+        const updatedUser = await apiRequest("/api/auth/me/", {
+          method: "PATCH",
+          body: formData
+        });
+        window.currentProfileUser = updatedUser;
+        renderProfile(updatedUser, profileJournals, profileWatchlist);
+        close();
+      } catch (requestError) {
+        error.textContent = requestError.message || "Profil gagal diperbarui.";
+        error.hidden = false;
+      } finally {
+        saveButton.disabled = false;
+      }
+    });
+  }
+
   async function load() {
     if (!AuthService.isAuthenticated()) {
       status.innerHTML = `<h1>Profil membutuhkan login</h1><p>Masuk terlebih dahulu untuk melihat diary, rating, like, dan watchlist milikmu.</p><button type="button" class="profile-login-btn">Masuk / Daftar</button>`;
@@ -144,6 +236,7 @@ function initProfilePage() {
         WatchlistService.getAll()
       ]);
       renderProfile(user, journals, watchlist);
+      window.currentProfileUser = user;
       status.hidden = true;
       content.hidden = false;
     } catch (error) {
@@ -153,6 +246,7 @@ function initProfilePage() {
 
   renderEmptyCollections();
   setupCollectionFilters();
+  setupProfileEditor();
   load();
   window.addEventListener("auth:changed", load);
   window.addEventListener("auth:login", load);

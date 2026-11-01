@@ -25,3 +25,13 @@ a,
 input {
   -webkit-tap-highlight-color: transparent;
 }
+
+button,
+input {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

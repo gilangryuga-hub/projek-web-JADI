@@ -49,7 +49,7 @@
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.25 ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 #top-10-grid .movie-card:hover {

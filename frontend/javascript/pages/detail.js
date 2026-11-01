@@ -66,7 +66,9 @@ btnTrailer.addEventListener("click", () => {
 
 // Watchlist
 function updateWatchButton() {
-  btnWatch.classList.toggle("active", WatchlistService.has(TYPE, ID));
+  const isBookmarked = WatchlistService.has(TYPE, ID);
+  btnWatch.classList.toggle("active", isBookmarked);
+  btnWatch.setAttribute("aria-pressed", String(isBookmarked));
 }
 
 btnWatch.addEventListener("click", async () => {

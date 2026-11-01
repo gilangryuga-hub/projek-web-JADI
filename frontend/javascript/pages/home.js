@@ -132,6 +132,24 @@ async function showHero(index) {
   }
 }
 
+function updateHeroWatchlistButton() {
+  if (!btnHeroWatchlist || !currentHeroId) return;
+
+  const isBookmarked = WatchlistService.has("movie", currentHeroId);
+  btnHeroWatchlist.classList.toggle("active", isBookmarked);
+  btnHeroWatchlist.setAttribute("aria-pressed", String(isBookmarked));
+  btnHeroWatchlist.setAttribute(
+    "aria-label",
+    `${isBookmarked ? "Hapus" : "Tambahkan"} film hero ${isBookmarked ? "dari" : "ke"} Watchlist`
+  );
+
+  const icon = btnHeroWatchlist.querySelector("i");
+  if (icon) {
+    icon.classList.toggle("fa-solid", isBookmarked);
+    icon.classList.toggle("fa-regular", !isBookmarked);
+  }
+}
+
 // Tombol Watchlist di Hero
 btnHeroWatchlist.addEventListener("click", async () => {
   if (!currentHeroId) return;

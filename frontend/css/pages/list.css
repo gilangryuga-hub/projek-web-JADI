@@ -10,7 +10,6 @@
   /* Background berlapis: lapisan gelap -> gradasi cadangan */
   background:
     linear-gradient(rgba(11, 11, 26, 0.6), rgba(11, 11, 26, 0.85)),
-    url("images/bg-movies.jpg") center / cover no-repeat,
     linear-gradient(180deg, #1b2440, #0b0b1a);
 }
 

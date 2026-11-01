@@ -10,11 +10,11 @@ function createCardHTML(item, type = "movie") {
   const posterUrl = item.poster_path ? `${TMDB_CONFIG.IMG_POSTER}${item.poster_path}` : "";
 
   return `
-    <div class="movie-card" data-id="${item.id}" data-type="${type}"
+    <div class="movie-card" role="link" tabindex="0" aria-label="Lihat detail ${esc(title)}" data-id="${item.id}" data-type="${type}"
       data-title="${esc(title)}" data-poster-path="${item.poster_path || ""}">
       <img src="${posterUrl}" alt="${esc(title)}" loading="lazy">
       <span class="rating"><i class="fa-solid fa-star"></i> ${rating}/10</span>
-      <button class="bookmark ${isBookmarked ? "active" : ""}" aria-label="Watchlist">
+      <button type="button" class="bookmark ${isBookmarked ? "active" : ""}" aria-label="Tambahkan ${esc(title)} ke Watchlist" aria-pressed="${isBookmarked}">
         <i class="fa-solid fa-bookmark"></i>
       </button>
     </div>
@@ -56,6 +56,11 @@ function attachCardListeners(gridElement, onBookmarkToggle = null) {
     WatchlistService.toggle(media, type)
       .then(isAdded => {
         btn.classList.toggle("active", isAdded);
+        btn.setAttribute("aria-pressed", String(isAdded));
+        btn.setAttribute(
+          "aria-label",
+          `${isAdded ? "Hapus" : "Tambahkan"} ${card.dataset.title || "item"} ${isAdded ? "dari" : "ke"} Watchlist`
+        );
         if (typeof onBookmarkToggle === "function") {
           onBookmarkToggle(id, isAdded, type);
         }
@@ -66,5 +71,17 @@ function attachCardListeners(gridElement, onBookmarkToggle = null) {
           detail: { message: "Silakan login terlebih dahulu untuk menyimpan film ke WatchList." }
         }));
       });
+  });
+
+  gridElement.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    if (e.target.closest(".bookmark")) return;
+
+    const card = e.target.closest(".movie-card");
+    if (!card) return;
+
+    e.preventDefault();
+    const type = card.dataset.type || gridElement.dataset.type || "movie";
+    location.href = getPageUrl(`detail.html?type=${type}&id=${card.dataset.id}`);
   });
 }

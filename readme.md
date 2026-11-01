@@ -116,3 +116,33 @@ python manage.py runserver
 Frontend dapat dibuka melalui `frontend/index.html`. Data katalog film dan series
 diambil dari API TMDB sesuai konfigurasi pada
 `frontend/javascript/config/api.js`.
+
+## Konfigurasi Backend Production
+
+Sebelum menjalankan backend di production, set environment variable berikut:
+
+```text
+SECRET_KEY=<nilai-rahasia-panjang>
+DEBUG=False
+ALLOWED_HOSTS=api.example.com
+CORS_ALLOW_ALL_ORIGINS=False
+CORS_ALLOWED_ORIGINS=https://app.example.com
+SECURE_SSL_REDIRECT=True
+SESSION_COOKIE_SECURE=True
+CSRF_COOKIE_SECURE=True
+SECURE_HSTS_SECONDS=31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS=True
+SECURE_HSTS_PRELOAD=True
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=<smtp-username>
+EMAIL_HOST_PASSWORD=<smtp-password>
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+```
+
+Jalankan `python manage.py check --deploy` dan `python manage.py migrate`
+sebelum start server WSGI. Jangan menggunakan SQLite untuk deployment dengan
+traffic atau kebutuhan concurrent write yang tinggi; gunakan database production
+yang didukung platform hosting.

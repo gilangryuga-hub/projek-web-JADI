@@ -12,20 +12,20 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- CSS Modular -->
-  <link rel="stylesheet" href="css/global.css">
-  <link rel="stylesheet" href="css/pages/home.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/pages/home.css">
 </head>
 <body>
 
   <!-- ===== NAVBAR ===== -->
   <header class="navbar">
-    <a href="index.html" class="logo">Net<span class="accent">List</span></a>
+    <a href="../index.html" class="logo">Net<span class="accent">List</span></a>
 
     <nav class="menu" id="nav-menu">
-      <a href="index.html" class="active">Home</a>
-      <a href="pages/movies.html">Movies</a>
-      <a href="pages/series.html">Series</a>
-      <a href="pages/watchlist.html">WatchList</a>
+      <a href="../index.html" class="active">Home</a>
+      <a href="movies.html">Movies</a>
+      <a href="series.html">Series</a>
+      <a href="watchlist.html">WatchList</a>
     </nav>
 
     <div class="search-box">
@@ -33,7 +33,7 @@
       <input type="text" id="search-input" placeholder="Search movies...">
     </div>
 
-    <a href="pages/profile/navbar.html" class="profile" aria-label="Profile"><i class="fa-regular fa-circle-user"></i></a>
+    <a href="profile/navbar.html" class="profile" aria-label="Profile"><i class="fa-regular fa-circle-user"></i></a>
 
     <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
       <i class="fa-solid fa-bars"></i>
@@ -58,10 +58,10 @@
       <p class="hero-desc" id="hero-desc"></p>
 
       <div class="hero-buttons">
-        <button class="btn-trailer" id="btn-trailer">
+        <button type="button" class="btn-trailer" id="btn-trailer">
           <i class="fa-solid fa-play"></i> Trailer
         </button>
-        <button class="btn-watchlist" id="btn-hero-watchlist">
+        <button type="button" class="btn-watchlist" id="btn-hero-watchlist" aria-pressed="false">
           <i class="fa-regular fa-bookmark"></i> WatchList
         </button>
       </div>
@@ -80,16 +80,16 @@
   </section>
 
   <!-- JavaScript Modular -->
-  <script src="javascript/config/api.js"></script>
-  <script src="javascript/utils/helpers.js"></script>
-  <script src="javascript/utils/apiClient.js"></script>
-  <script src="javascript/services/authService.js"></script>
-  <script src="javascript/services/watchlistService.js"></script>
-  <script src="javascript/services/journalService.js"></script>
-  <script src="javascript/components/authModal.js"></script>
-  <script src="javascript/components/journalModal.js"></script>
-  <script src="javascript/components/card.js"></script>
-  <script src="javascript/components/navbar.js"></script>
-  <script src="javascript/pages/home.js"></script>
+  <script src="../javascript/config/api.js"></script>
+  <script src="../javascript/utils/helpers.js"></script>
+  <script src="../javascript/utils/apiClient.js"></script>
+  <script src="../javascript/services/authService.js"></script>
+  <script src="../javascript/services/watchlistService.js"></script>
+  <script src="../javascript/services/journalService.js"></script>
+  <script src="../javascript/components/authModal.js"></script>
+  <script src="../javascript/components/journalModal.js"></script>
+  <script src="../javascript/components/card.js"></script>
+  <script src="../javascript/components/navbar.js"></script>
+  <script src="../javascript/pages/home.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-from pathlib import Path
+from urllib.parse import unquote, urlparse
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -11,11 +11,17 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise RuntimeError('SECRET_KEY environment variable must be set.')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv('ALLOWED_HOSTS', '').split(',')
+    if host.strip()
+]
 
 
 # Application definition
@@ -73,13 +79,41 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    parsed_database_url = urlparse(database_url)
+    database_scheme = parsed_database_url.scheme.lower()
+
+    if database_scheme in ('postgres', 'postgresql'):
+        database_engine = 'django.db.backends.postgresql'
+    elif database_scheme in ('mysql', 'mysql2'):
+        database_engine = 'django.db.backends.mysql'
+    elif database_scheme in ('sqlite', 'sqlite3'):
+        database_engine = 'django.db.backends.sqlite3'
+    else:
+        raise ValueError(f'Unsupported DATABASE_URL scheme: {database_scheme}')
+
+    if database_engine == 'django.db.backends.sqlite3':
+        database_name = unquote(parsed_database_url.path)
+        if os.name == 'nt' and database_name.startswith('/'):
+            database_name = database_name[1:]
+        database_config = {'ENGINE': database_engine, 'NAME': database_name}
+    else:
+        database_config = {
+            'ENGINE': database_engine,
+            'NAME': unquote(parsed_database_url.path.lstrip('/')),
+            'USER': unquote(parsed_database_url.username or ''),
+            'PASSWORD': unquote(parsed_database_url.password or ''),
+            'HOST': parsed_database_url.hostname or '',
+            'PORT': parsed_database_url.port or '',
+        }
+else:
+    database_config = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-}
 
+DATABASES = {'default': database_config}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
@@ -116,14 +150,28 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
+configured_email_backend = os.getenv(
+    'EMAIL_BACKEND',
+    'django.core.mail.backends.console.EmailBackend'
+    if DEBUG
+    else 'django.core.mail.backends.smtp.EmailBackend',
+)
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': configured_email_backend,
+        'HOST': os.getenv('EMAIL_HOST', ''),
+        'PORT': int(os.getenv('EMAIL_PORT', '587')),
+        'USERNAME': os.getenv('EMAIL_HOST_USER', ''),
+        'PASSWORD': os.getenv('EMAIL_HOST_PASSWORD', ''),
+        'USE_TLS': os.getenv('EMAIL_USE_TLS', 'True').lower() == 'true',
+        'USE_SSL': os.getenv('EMAIL_USE_SSL', 'False').lower() == 'true',
     },
 }
 
@@ -134,11 +182,20 @@ REST_FRAMEWORK = {
     )
 }
 
-CORS_ALLOW_ALL_ORIGINS = True  
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False').lower() == 'true'
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
+    if origin.strip()
+]
 
-# Saat siap deploy / production, ubah menjadi:
-# CORS_ALLOW_ALL_ORIGINS = False
-# CORS_ALLOWED_ORIGINS = [
-#     "https://namadomain-frontend.com",
-#     "http://localhost:3000",
-# ]
+# Production transport and cookie protections are opt-in so local HTTP
+# development remains usable while deployment can enforce HTTPS explicitly.
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False').lower() == 'true'
+SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
+CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'False').lower() == 'true'
+SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '0'))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv(
+    'SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False'
+).lower() == 'true'
+SECURE_HSTS_PRELOAD = os.getenv('SECURE_HSTS_PRELOAD', 'False').lower() == 'true'

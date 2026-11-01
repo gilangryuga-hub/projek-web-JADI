@@ -468,6 +468,74 @@ body.sidebar-open .sidebar-overlay {
 .profile-edit-btn:disabled { cursor: not-allowed; opacity: .55; }
 .profile-edit-btn:hover, .text-action:hover { border-color: #00e054; color: #00e054; background: rgba(0,224,84,.08); }
 .profile-edit-btn i { margin-right: .35rem; }
+
+.profile-avatar {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.profile-edit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.profile-edit-modal[hidden] { display: none; }
+
+.profile-edit-dialog {
+  position: relative;
+  width: min(100%, 440px);
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: #1b2125;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+}
+
+.profile-edit-dialog h2 { margin: 0 0 1.25rem; color: #fff; font-size: 1.25rem; }
+.profile-edit-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  border: 0;
+  background: transparent;
+  color: #9da7ab;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.profile-edit-form { display: grid; gap: 1rem; }
+.profile-edit-form label { display: grid; gap: 0.45rem; color: #d5dadd; font-size: 0.78rem; }
+.profile-edit-form textarea,
+.profile-edit-form input[type="file"] {
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px solid #3a4449;
+  border-radius: 4px;
+  background: #252d31;
+  color: #f5f7f8;
+  font: inherit;
+}
+.profile-edit-form textarea { resize: vertical; }
+.profile-edit-hint { margin: -0.5rem 0 0; color: #7f8a8f; font-size: 0.68rem; }
+.profile-edit-error { margin: 0; color: #ff8a8a; font-size: 0.75rem; }
+.profile-edit-actions { display: flex; justify-content: flex-end; gap: 0.6rem; }
+.profile-edit-actions button {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #3a4449;
+  border-radius: 4px;
+  background: transparent;
+  color: #dce2e4;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.profile-edit-actions .profile-edit-save { border-color: #00e054; background: #00e054; color: #14181c; }
 .profile-stats { display: grid; grid-template-columns: repeat(4, minmax(60px, 1fr)); gap: 1.2rem; align-self: flex-start; }
 .profile-stats div { min-width: 64px; text-align: center; }
 .profile-stats strong { display: block; color: #fff; font-size: 1.35rem; }
