@@ -6,8 +6,14 @@ const TMDB_CONFIG = {
   IMG_PROFILE: "https://image.tmdb.org/t/p/w185"
 };
 
+const IS_LOCAL_ENVIRONMENT = ["localhost", "127.0.0.1", "::1", ""].includes(
+  window.location.hostname
+);
+
 const API_CONFIG = {
-  DJANGO_BASE_URL: "https://muhammadnaufaldzaky.pythonanywhere.com",
+  DJANGO_BASE_URL: IS_LOCAL_ENVIRONMENT
+    ? "http://127.0.0.1:8000"
+    : "https://muhammadnaufaldzaky.pythonanywhere.com",
   ACCESS_TOKEN_KEY: "netlist_access_token",
   REFRESH_TOKEN_KEY: "netlist_refresh_token",
 };

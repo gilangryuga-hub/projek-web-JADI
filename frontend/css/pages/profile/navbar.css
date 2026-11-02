@@ -609,6 +609,12 @@ body.sidebar-open .sidebar-overlay {
    - Saat class 'sidebar-open' aktif: Sidebar meluncur keluar
 */
 @media (max-width: 767px) {
+  .navbar-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   .sidebar {
     transform: translateX(-100%);
   }
@@ -618,7 +624,10 @@ body.sidebar-open .sidebar-overlay {
   }
 
   .main-content {
-    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0 !important;
+    box-sizing: border-box;
   }
 }
 
@@ -678,20 +687,61 @@ body.sidebar-open .sidebar-overlay {
 }
 
 @media (max-width: 560px) {
-  .profile-main { padding-top: calc(var(--topbar-h) + .75rem); }
-  .profile-hero { padding-top: 1rem; }
-  .profile-identity { gap: .85rem; }
+  .top-bar {
+    padding: 0 .75rem;
+    gap: .5rem;
+  }
+  .top-bar__logo { font-size: 1.1rem; }
+  .top-bar__actions { gap: .25rem; }
+  .icon-btn { width: 32px; height: 32px; }
+
+  .profile-main {
+    padding: calc(var(--topbar-h) + .75rem) .85rem 1.5rem;
+  }
+  .profile-hero {
+    padding-top: .5rem;
+    margin-bottom: 1.5rem;
+    gap: 1.25rem;
+  }
+  .profile-identity {
+    flex-direction: column;
+    align-items: center;
+    gap: .85rem;
+    text-align: center;
+  }
+  .profile-identity > div:not(.profile-avatar) {
+    width: 100%;
+    min-width: 0;
+  }
   .profile-avatar { width: 76px; height: 76px; flex-basis: 76px; font-size: 1.45rem; }
-  .profile-bio { font-size: .8rem; }
-  .profile-stats { gap: .4rem; }
+  .profile-intro h1 { font-size: 1.5rem; overflow-wrap: anywhere; }
+  .profile-bio { max-width: none; font-size: .8rem; }
+  .profile-location { display: flex; justify-content: center; align-items: center; }
+  .profile-edit-btn { max-width: 100%; }
+  .profile-stats {
+    width: 100%;
+    max-width: none;
+    gap: .4rem;
+  }
+  .profile-stats div { min-width: 0; }
   .profile-stats strong { font-size: 1.1rem; }
   .profile-stats span { font-size: .58rem; }
+
+  .section-heading,
+  .widget-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .section-heading h2 { font-size: 1.1rem; }
   .favorite-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem .7rem; }
   .films-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem .7rem; }
-  .filter-toolbar { align-items: stretch; }
-  .filter-toolbar label { flex: 1 1 42%; flex-direction: column; align-items: stretch; }
+  .filter-toolbar { align-items: stretch; gap: .5rem; }
+  .filter-toolbar label { flex: 1 1 100%; flex-direction: row; justify-content: space-between; }
+  .filter-toolbar select { min-width: 0; max-width: 65%; }
   .profile-sidebar { display: block; }
   .review-card { padding: .75rem; gap: .7rem; }
   .review-poster { width: 58px; flex-basis: 58px; }
+  .review-meta { flex-wrap: wrap; gap: .25rem .75rem; }
   .review-body p { font-size: .72rem; }
 }
