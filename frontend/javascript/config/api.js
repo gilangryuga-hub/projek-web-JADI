@@ -9,7 +9,6 @@ const TMDB_CONFIG = {
 const IS_LOCAL_ENVIRONMENT = ["localhost", "127.0.0.1", "::1", ""].includes(
   window.location.hostname
 );
-
 const API_CONFIG = {
   DJANGO_BASE_URL: IS_LOCAL_ENVIRONMENT
     ? "http://127.0.0.1:8000"

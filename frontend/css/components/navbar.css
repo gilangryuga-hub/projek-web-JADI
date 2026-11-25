@@ -124,22 +124,29 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Status login aktif pada ikon profil */
-.profile.is-logged-in {
+.profile.has-profile-photo {
   position: relative;
-  color: var(--accent);
+  overflow: hidden;
+  border: 0;
+  background: transparent;
 }
 
-.profile.is-logged-in::after {
-  content: "";
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 8px;
-  height: 8px;
+.profile.has-profile-photo > i {
+  display: none !important;
+}
+
+.profile.is-logged-in.has-profile-photo::after {
+  display: none;
+}
+
+.profile-avatar-image {
+  display: block;
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 2px var(--bg);
+  object-fit: cover;
+  pointer-events: none;
 }
 
 /* Tombol Autentikasi Modern (Login/Register & Logout) */

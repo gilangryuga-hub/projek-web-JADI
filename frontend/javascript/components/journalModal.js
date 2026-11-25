@@ -51,6 +51,9 @@ function initJournalModal() {
 
   const form = modal.querySelector("#journal-form");
   const error = modal.querySelector("[data-journal-error]");
+  const title = modal.querySelector("#journal-modal-title");
+  const submitButton = form.querySelector('[type="submit"]');
+  let editingJournalId = null;
 
   /**
    * Membuka modal jurnal untuk media tertentu.
@@ -60,11 +63,34 @@ function initJournalModal() {
    */
   function open(media, type) {
     form.reset();
+    editingJournalId = null;
+    title.textContent = "Tambah ke Jurnal";
+    submitButton.textContent = "Simpan";
     form.elements.tmdb_id.value = media.id;
     form.elements.media_type.value = type;
     form.elements.title.value = media.title || media.name || "";
     form.elements.poster_path.value = media.poster_path || "";
     form.elements.watched_date.value = new Date().toISOString().slice(0, 10);
+    error.textContent = "";
+    modal.hidden = false;
+    form.elements.rating.focus();
+  }
+
+  function openForEdit(entry) {
+    form.reset();
+    editingJournalId = entry.id;
+    title.textContent = "Edit Catatan Diary";
+    submitButton.textContent = "Simpan perubahan";
+    form.elements.tmdb_id.value = entry.tmdb_id;
+    form.elements.media_type.value = entry.media_type;
+    form.elements.title.value = entry.title || "";
+    form.elements.poster_path.value = entry.poster_path || "";
+    form.elements.rating.value = entry.rating;
+    form.elements.watched_date.value = entry.watched_date || "";
+    form.elements.notes.value = entry.notes || "";
+    form.elements.is_rewatch.checked = Boolean(entry.is_rewatch);
+    form.elements.is_liked.checked = Boolean(entry.is_liked);
+    form.elements.contains_spoilers.checked = Boolean(entry.contains_spoilers);
     error.textContent = "";
     modal.hidden = false;
     form.elements.rating.focus();
@@ -76,6 +102,7 @@ function initJournalModal() {
    */
   function close() {
     modal.hidden = true;
+    editingJournalId = null;
   }
 
   modal.addEventListener("click", (event) => {
@@ -92,16 +119,21 @@ function initJournalModal() {
     data.is_rewatch = form.elements.is_rewatch.checked;
     data.is_liked = form.elements.is_liked.checked;
     data.contains_spoilers = form.elements.contains_spoilers.checked;
+    const journalId = editingJournalId;
+    submitButton.disabled = true;
     try {
-      await JournalService.create(data);
+      if (journalId === null) await JournalService.create(data);
+      else await JournalService.update(journalId, data);
       close();
       window.dispatchEvent(new CustomEvent("journal:changed"));
     } catch (requestError) {
       error.textContent = requestError.message;
+    } finally {
+      submitButton.disabled = false;
     }
   });
 
-  window.JournalModal = { open, close };
+  window.JournalModal = { open, openForEdit, close };
 }
 
 if (document.readyState === "loading") {

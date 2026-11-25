@@ -1,7 +1,7 @@
 /**
- * ============================================================================
+ *
  * HALAMAN: LIST (movies.html & series.html)
- * ============================================================================
+ *
  */
 
 // Menentukan apakah sedang membuka daftar Film atau Series dari atribut <body data-type="...">
@@ -72,6 +72,19 @@ async function loadPage(page = 1) {
     totalPages = Math.min(data.total_pages, 500);
     showGrid(data.results, page > 1);
     btnMore.hidden = currentPage >= totalPages;
+
+    if (currentQuery && page === 1) {
+      renderSearchStatus(
+        contentTitle,
+        currentQuery,
+        data.results,
+        TYPE,
+        title => {
+          if (searchInput) searchInput.value = title;
+          doSearch(title);
+        },
+      );
+    }
   } catch (err) {
     console.error(err);
     showMessage(`Gagal memuat data (${err.message}).`);
@@ -131,7 +144,17 @@ async function doSearch(query) {
   try {
     const data = await getJSON(`/search/${TYPE}`, `&query=${encodeURIComponent(query)}`);
     if (thisRequest !== requestCounter) return;
-    contentTitle.textContent = `Hasil pencarian: "${query}"`;
+    currentQuery = query;
+    renderSearchStatus(
+      contentTitle,
+      query,
+      data.results,
+      TYPE,
+      title => {
+        if (searchInput) searchInput.value = title;
+        doSearch(title);
+      },
+    );
     showGrid(data.results);
   } catch (err) {
     console.error(err);

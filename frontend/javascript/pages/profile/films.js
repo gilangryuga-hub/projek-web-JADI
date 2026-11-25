@@ -3,9 +3,15 @@ function initFilmsPage() {
   const content = document.getElementById("profile-content");
   if (!status || !content) return;
 
+  const statusFilter = document.getElementById("films-status-filter");
+  const requestedStatus = new URLSearchParams(window.location.search).get("status");
+  if (["all", "watched", "watchlist"].includes(requestedStatus)) {
+    statusFilter.value = requestedStatus;
+  }
+
   const render = ({ journals, watchlist }) => {
     const rating = document.getElementById("films-rating-filter").value;
-    const state = document.getElementById("films-status-filter").value;
+    const state = statusFilter.value;
     const sort = document.getElementById("films-sort").value;
     const watched = journals.map(item => ({ ...item, source: "watched" }));
     const saved = watchlist

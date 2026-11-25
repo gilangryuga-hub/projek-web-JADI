@@ -46,6 +46,18 @@ const AuthService = {
   },
 
   /**
+   * Memperbarui bio dan foto profil pengguna yang sedang login.
+   * @param {{bio: string, avatar_url: string}} profile - Data profil.
+   * @returns {Promise<object>} Profil yang telah diperbarui.
+   */
+  async updateMe(profile) {
+    return apiRequest("/api/auth/me/", {
+      method: "PATCH",
+      body: JSON.stringify(profile)
+    });
+  },
+
+  /**
    * Memeriksa apakah access atau refresh token tersedia.
    * @returns {boolean} True jika sesi lokal tersedia.
    */

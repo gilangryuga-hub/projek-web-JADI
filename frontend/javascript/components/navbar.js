@@ -1,7 +1,7 @@
 /**
- * ============================================================================
+ *
  * KOMPONEN: NAVBAR (Interaktivitas Mobile Toggle & Aksesibilitas)
- * ============================================================================
+ *
  */
 
 function initNavbar() {
@@ -100,6 +100,10 @@ function initAuthNavbar() {
 
   // Tangani klik ikon profil untuk Guest
   const profileLink = nav.querySelector(".profile");
+  let avatarRequestId = 0;
+  let avatarLoading = false;
+  let avatarLoaded = false;
+
   if (profileLink && !profileLink.dataset.boundAuth) {
     profileLink.dataset.boundAuth = "true";
     profileLink.addEventListener("click", (e) => {
@@ -110,6 +114,57 @@ function initAuthNavbar() {
         }
       }
     });
+  }
+
+  function clearProfileAvatar() {
+    avatarRequestId++;
+    avatarLoading = false;
+    avatarLoaded = false;
+    profileLink?.querySelector(".profile-avatar-image")?.remove();
+    profileLink?.classList.remove("has-profile-photo");
+    profileLink?.classList.remove("is-logged-in");
+    const icon = profileLink?.querySelector("i");
+    if (icon) icon.hidden = false;
+  }
+
+  function loadProfileAvatar() {
+    if (!profileLink || avatarLoading || avatarLoaded) return;
+
+    avatarLoading = true;
+    const requestId = ++avatarRequestId;
+    AuthService.getMe()
+      .then(user => {
+        if (requestId !== avatarRequestId || !AuthService.isAuthenticated()) return;
+        avatarLoaded = true;
+
+        if (!user.avatar_url) return;
+
+        const icon = profileLink.querySelector("i");
+        const image = document.createElement("img");
+        image.className = "profile-avatar-image";
+        image.alt = "";
+        image.setAttribute("aria-hidden", "true");
+        image.addEventListener("error", () => {
+          if (requestId !== avatarRequestId) return;
+          image.remove();
+          profileLink.classList.remove("has-profile-photo");
+          if (icon) icon.hidden = false;
+          console.error("Foto profil gagal dimuat:", user.avatar_url);
+        }, { once: true });
+
+        image.src = user.avatar_url;
+        profileLink.classList.add("has-profile-photo");
+        if (icon) icon.hidden = true;
+        profileLink.appendChild(image);
+      })
+      .catch(error => {
+        if (requestId === avatarRequestId) {
+          console.error("Gagal mengambil data foto profil:", error);
+        }
+      })
+      .finally(() => {
+        if (requestId === avatarRequestId) avatarLoading = false;
+      });
   }
 
   // Item autentikasi untuk menu dropdown mobile
@@ -130,11 +185,10 @@ function initAuthNavbar() {
 
     // Perbarui status visual ikon profil
     if (profileLink) {
-      profileLink.classList.toggle("is-logged-in", loggedIn);
       const icon = profileLink.querySelector("i");
       if (icon) {
         if (loggedIn) {
-          icon.className = "fa-solid fa-circle-user";
+          icon.className = "fa-regular fa-circle-user";
           profileLink.setAttribute("title", "Lihat Profil Saya");
           profileLink.setAttribute("aria-label", "Lihat Profil Saya");
         } else {
@@ -142,6 +196,12 @@ function initAuthNavbar() {
           profileLink.setAttribute("title", "Profil Pengguna");
           profileLink.setAttribute("aria-label", "Profil Pengguna");
         }
+      }
+
+      if (loggedIn) {
+        loadProfileAvatar();
+      } else {
+        clearProfileAvatar();
       }
     }
 

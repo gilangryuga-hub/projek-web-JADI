@@ -5,15 +5,43 @@
 }
 
 body {
-  font-family: var(--font);
+  font-family: var(--font-body);
   color: var(--text);
   background: var(--bg);
   overflow-x: hidden;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.logo,
+.auth-brand,
+.section-title,
+.content-title,
+.movie-title {
+  font-family: var(--font-heading);
+}
+
 a {
   color: var(--text);
   text-decoration: none;
+}
+
+.search-suggestion {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .accent {

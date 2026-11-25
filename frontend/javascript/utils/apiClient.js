@@ -48,20 +48,38 @@ async function refreshAccessToken() {
   const refresh = localStorage.getItem(API_CONFIG.REFRESH_TOKEN_KEY);
   if (!refresh) return false;
 
-  const response = await fetch(
-    `${API_CONFIG.DJANGO_BASE_URL}/api/auth/token/refresh/`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh })
+  try {
+    const response = await fetch(
+      `${API_CONFIG.DJANGO_BASE_URL}/api/auth/token/refresh/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh }),
+      },
+    );
+
+    if (!response.ok) {
+      // Jika refresh token ditolak (misal: 401 Unauthorized / expired)
+      if (response.status === 401) {
+        // Hapus token basi pakai key config agar konsisten
+        localStorage.removeItem(API_CONFIG.ACCESS_TOKEN_KEY);
+        localStorage.removeItem(API_CONFIG.REFRESH_TOKEN_KEY);
+
+        // Reset state auth di app jika service tersedia
+        if (typeof authService !== "undefined" && authService.logout) {
+          authService.logout();
+        }
+      }
+      return false;
     }
-  );
 
-  if (!response.ok) return false;
-
-  const tokens = await response.json();
-  saveAuthTokens({ access: tokens.access });
-  return true;
+    const tokens = await response.json();
+    saveAuthTokens({ access: tokens.access });
+    return true;
+  } catch (error) {
+    console.error("Gagal refresh access token:", error);
+    return false;
+  }
 }
 
 /**
@@ -88,11 +106,11 @@ async function apiRequest(path, options = {}, isRetry = false) {
   try {
     response = await fetch(`${API_CONFIG.DJANGO_BASE_URL}${path}`, {
       ...options,
-      headers
+      headers,
     });
   } catch (error) {
     throw new Error(
-      `Backend tidak dapat dihubungi. Jalankan Django dengan "python manage.py runserver" dari folder backend.`
+      `Backend tidak dapat dihubungi. Jalankan Django dengan "python manage.py runserver" dari folder backend.`,
     );
   }
 
@@ -108,7 +126,8 @@ async function apiRequest(path, options = {}, isRetry = false) {
     let detail = `Request gagal (${response.status}).`;
     try {
       const payload = await response.json();
-      detail = payload.detail || Object.values(payload).flat().join(" ") || detail;
+      detail =
+        payload.detail || Object.values(payload).flat().join(" ") || detail;
     } catch (error) {
       console.warn("Respons error API bukan JSON.", error);
     }

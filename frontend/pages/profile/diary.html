@@ -88,35 +88,66 @@
           Memuat diary...
         </div>
         <div id="profile-content" hidden>
-          <section class="profile-section feature-page">
-            <div class="section-heading">
-              <div>
+          <section class="profile-section feature-page diary-page">
+            <header class="diary-page-header">
+              <div class="diary-title-group">
                 <p class="section-eyebrow">Your watch journal</p>
-                <h1>Diary</h1>
+                <div class="diary-title-row">
+                  <h1>Diary</h1>
+                  <span class="collection-count" id="diary-count">0 entries</span>
+                </div>
               </div>
-              <span class="collection-count" id="diary-count">0 entries</span>
-            </div>
-            <div class="filter-toolbar">
-              <label
-                >Year
-                <select id="diary-year-filter">
-                  <option value="all">All years</option>
-                </select></label
-              ><label
-                >Rating
-                <select id="diary-rating-filter">
-                  <option value="all">All ratings</option>
-                  <option value="5">5 stars</option>
-                  <option value="4">4+ stars</option>
-                  <option value="3">3+ stars</option>
-                </select></label
-              >
-            </div>
+              <div class="diary-toolbar" aria-label="Diary filters">
+                <label class="diary-filter">
+                  <span>Rating</span>
+                  <select id="diary-rating-filter">
+                    <option value="all">All ratings</option>
+                    <option value="5">5 stars</option>
+                    <option value="4">4+ stars</option>
+                    <option value="3">3+ stars</option>
+                    <option value="2">2+ stars</option>
+                    <option value="1">1+ stars</option>
+                  </select>
+                </label>
+                <label class="diary-filter">
+                  <span>Diary year</span>
+                  <select id="diary-year-filter">
+                    <option value="all">All years</option>
+                  </select>
+                </label>
+                <label class="diary-filter">
+                  <span>Sort by</span>
+                  <select id="diary-sort-filter">
+                    <option value="watched-desc">Watched date</option>
+                    <option value="watched-asc">Oldest first</option>
+                    <option value="title">Film title</option>
+                    <option value="rating">Rating</option>
+                  </select>
+                </label>
+                <button
+                  id="diary-poster-toggle"
+                  class="diary-poster-toggle"
+                  type="button"
+                  aria-label="Hide film posters"
+                  aria-pressed="false"
+                  title="Hide film posters"
+                >
+                  <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                </button>
+              </div>
+            </header>
             <div class="diary-table-wrap">
-              <div class="diary-table">
-                <div class="diary-table-head">
-                  <span>Date</span><span>Film</span><span>Rating</span
-                  ><span>Activity</span>
+              <div class="diary-table" role="table" aria-label="Diary entries">
+                <div class="diary-table-head" role="row">
+                  <span role="columnheader">Month</span>
+                  <span role="columnheader">Day</span>
+                  <span role="columnheader">Film</span>
+                  <span role="columnheader">Released</span>
+                  <span role="columnheader">Rating</span>
+                  <span role="columnheader">Like</span>
+                  <span role="columnheader">Rewatch</span>
+                  <span role="columnheader">Review</span>
+                  <span role="columnheader">Edit</span>
                 </div>
                 <div id="diary-table-body"></div>
               </div>
@@ -132,6 +163,7 @@
     <script src="../../javascript/services/watchlistService.js"></script>
     <script src="../../javascript/services/journalService.js"></script>
     <script src="../../javascript/components/authModal.js"></script>
+    <script src="../../javascript/components/journalModal.js"></script>
     <script src="../../javascript/pages/profile/navbar.js"></script>
     <script src="../../javascript/pages/profile/profile-data.js"></script>
     <script src="../../javascript/pages/profile/diary.js"></script>

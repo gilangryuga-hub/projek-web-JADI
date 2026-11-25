@@ -1,7 +1,7 @@
 /**
- * ============================================================================
+ *
  * KOMPONEN: AUTH MODAL (Login & Register Modal)
- * ============================================================================
+ *
  * Menyediakan modal interaktif untuk masuk (login) dan pendaftaran (register)
  * pengguna dengan gaya modern, tab switcher, toggle password, dan validasi.
  */
@@ -155,6 +155,14 @@ function initAuthModal() {
    * @returns {void}
    */
   function open(register = false, reason = "") {
+    if (!modal.hidden) {
+      if (reason) {
+        contextText.textContent = reason;
+        contextNotice.hidden = false;
+      }
+      return;
+    }
+
     setMode(register);
 
     if (reason) {
@@ -260,7 +268,14 @@ function initAuthModal() {
     }
   });
 
-  window.AuthModal = { open, close };
+  window.addEventListener("popstate", close);
+  window.addEventListener("pagehide", close);
+
+  window.AuthModal = {
+    open,
+    close,
+    isOpen: () => !modal.hidden
+  };
 }
 
 if (document.readyState === "loading") {

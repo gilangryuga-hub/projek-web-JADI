@@ -4,6 +4,8 @@
    Bisa di-toggle di Mobile & Komputer (Desktop)
    ========================================================================== */
 
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
+
 :root {
   --drawer-w: 260px;
   --topbar-h: 60px;
@@ -188,6 +190,295 @@ body.sidebar-open .menu-btn span:nth-child(3) {
   width: 32px;
   height: 32px;
   font-size: 0.75rem;
+}
+
+.user-avatar.has-profile-photo,
+.profile-avatar.has-profile-photo {
+  overflow: hidden;
+  padding: 0;
+  background: none;
+}
+
+.user-avatar img,
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.profile-edit-dialog {
+  position: fixed;
+  inset: 50% auto auto 50%;
+  width: min(92vw, 700px);
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, #171d3a, var(--surface) 55%, var(--bg));
+  color: var(--text);
+  font-family: var(--font);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.6), var(--shadow-accent);
+}
+
+.profile-edit-dialog::backdrop {
+  background: rgba(4, 6, 16, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+.profile-edit-form {
+  display: grid;
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+}
+
+.profile-edit-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.profile-edit-eyebrow {
+  margin: 0 0 0.4rem;
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.profile-edit-header h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+}
+
+.profile-edit-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.profile-edit-close {
+  display: grid;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--surface-border);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.profile-edit-close:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.profile-edit-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(190px, 0.75fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.profile-edit-fields {
+  display: grid;
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+.profile-edit-photo-card,
+.profile-edit-bio-field,
+.profile-edit-note {
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.profile-edit-photo-card {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+}
+
+.profile-edit-photo-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.15rem;
+}
+
+.profile-edit-avatar-preview {
+  display: grid;
+  flex: 0 0 72px;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  overflow: hidden;
+  border: 2px solid rgba(74, 110, 224, 0.55);
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--accent), #8aa4ff);
+  color: var(--text);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.profile-edit-avatar-preview img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.profile-edit-photo-heading h3,
+.profile-edit-note h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+}
+
+.profile-edit-photo-heading p,
+.profile-edit-note p {
+  margin: 0.3rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.profile-edit-form label {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.profile-edit-form input,
+.profile-edit-form textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.85rem;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  background: rgba(5, 7, 20, 0.55);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.84rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.profile-edit-form input:focus,
+.profile-edit-form textarea:focus {
+  border-color: var(--accent);
+  outline-color: color-mix(in srgb, var(--accent) 25%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.profile-edit-form textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.profile-edit-hint {
+  color: var(--text-muted);
+  font-size: 0.69rem;
+  line-height: 1.5;
+}
+
+.profile-edit-bio-field {
+  padding: 1rem;
+}
+
+.profile-edit-note {
+  padding: 1.2rem;
+  background: linear-gradient(145deg, rgba(74, 110, 224, 0.16), rgba(255, 255, 255, 0.025));
+}
+
+.profile-edit-note > i {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 1rem;
+  place-items: center;
+  border: 1px solid rgba(74, 110, 224, 0.35);
+  border-radius: 10px;
+  background: rgba(74, 110, 224, 0.16);
+  color: var(--accent);
+}
+
+.profile-edit-message {
+  margin: 0;
+  color: #ff8fa6;
+  font-size: 0.8rem;
+}
+
+.profile-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--surface-border);
+}
+
+.profile-edit-actions button {
+  min-height: 40px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.profile-edit-actions button:hover {
+  border-color: var(--accent);
+  background: rgba(74, 110, 224, 0.12);
+}
+
+.profile-edit-actions button[type="submit"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.profile-edit-actions button[type="submit"]:hover {
+  background: #5e7ee6;
+}
+
+.profile-edit-actions button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+@media (max-width: 620px) {
+  .profile-edit-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-edit-note {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    column-gap: 0.75rem;
+  }
+
+  .profile-edit-note > i {
+    grid-row: span 2;
+    margin: 0;
+  }
 }
 
 /* ==========================================================================
@@ -418,6 +709,16 @@ body.sidebar-open .sidebar-overlay {
 .film-tile > strong { margin-top: .55rem; font-size: .76rem; }
 .film-tile > span { margin-top: .25rem; color: #8f999d; font-size: .65rem; }
 .film-tile .rating-stars { color: #00e054; }
+.profile-show-more { display: inline-flex; margin-top: .8rem; color: #00e054; font-size: .75rem; font-weight: 700; text-decoration: none; }
+.profile-show-more:hover { color: #70ff9e; text-decoration: underline; }
+.profile-action-message { margin: 0 0 1rem; padding: .75rem 1rem; border: 1px solid rgba(255, 107, 107, .35); border-radius: 4px; background: rgba(255, 107, 107, .08); color: #ff9a9a; font-size: .8rem; line-height: 1.5; }
+.profile-action-message[hidden] { display: none; }
+.journal-actions { display: flex; align-items: center; gap: .4rem; }
+.journal-action-btn { min-width: 34px; min-height: 34px; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .35rem; border: 1px solid #3a4449; border-radius: 3px; background: transparent; color: #c3cbce; cursor: pointer; font: inherit; font-size: .7rem; }
+.journal-action-btn:hover:not(:disabled) { border-color: #00e054; color: #00e054; }
+.journal-action-btn--delete:hover:not(:disabled) { border-color: #ff6b6b; color: #ff8c8c; }
+.journal-action-btn:disabled { cursor: wait; opacity: .6; }
+
 .diary-table-wrap { overflow-x: auto; border: 1px solid rgba(255,255,255,.08); border-radius: 4px; }
 .diary-table { min-width: 580px; background: #1b2125; }
 .diary-table-head, .diary-row { display: grid; grid-template-columns: 86px minmax(180px, 1fr) 110px 110px; align-items: center; gap: .8rem; padding: .75rem 1rem; }

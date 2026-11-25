@@ -13,16 +13,27 @@
   --star: #f5c518;                   /* kuning bintang rating */
   --text: #ffffff;
   --border: rgba(255, 255, 255, 0.6);
-  --font: "Noto Serif", Georgia, serif;
+  --font-body: "Sora", sans-serif;
+  --font-heading: "Outfit", sans-serif;
+  --font: var(--font-body);
 }
 
 
 /*2. BODY */
 
 body {
-  font-family: var(--font);
+  font-family: var(--font-body);
   color: var(--text);
   background: var(--bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
 }
 
 a {

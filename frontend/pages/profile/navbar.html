@@ -213,6 +213,50 @@
         </div>
       </main>
 
+      <dialog id="profile-edit-dialog" class="profile-edit-dialog" aria-labelledby="profile-edit-title">
+        <form id="profile-edit-form" class="profile-edit-form">
+          <div class="profile-edit-header">
+            <div>
+              <p class="profile-edit-eyebrow">PERSONAL ACCOUNT</p>
+              <h2 id="profile-edit-title">Atur profil kamu</h2>
+              <p class="profile-edit-subtitle">Perbarui foto dan bio yang tampil di NetList.</p>
+            </div>
+            <button type="button" class="profile-edit-close" id="profile-edit-close" aria-label="Tutup">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="profile-edit-layout">
+            <div class="profile-edit-fields">
+              <section class="profile-edit-photo-card" aria-labelledby="profile-edit-photo-title">
+                <div class="profile-edit-photo-heading">
+                  <div class="profile-edit-avatar-preview" id="profile-edit-avatar-preview"></div>
+                  <div>
+                    <h3 id="profile-edit-photo-title">Foto profil</h3>
+                    <p>Gunakan tautan gambar publik yang ingin ditampilkan.</p>
+                  </div>
+                </div>
+                <label for="profile-edit-avatar">URL foto profil</label>
+                <input id="profile-edit-avatar" name="avatar_url" type="url" maxlength="200" placeholder="https://contoh.com/foto.jpg">
+                <small class="profile-edit-hint">Gunakan alamat gambar yang dapat dibuka publik. Kosongkan untuk kembali ke inisial.</small>
+              </section>
+              <label class="profile-edit-bio-field" for="profile-edit-bio">Bio
+                <textarea id="profile-edit-bio" name="bio" rows="4" placeholder="Ceritakan sedikit tentang dirimu"></textarea>
+              </label>
+            </div>
+            <aside class="profile-edit-note">
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+              <h3>Profilmu, identitasmu</h3>
+              <p>Foto profil akan muncul di halaman profil dan ikon akun pada navigasi NetList.</p>
+            </aside>
+          </div>
+          <p id="profile-edit-message" class="profile-edit-message" role="alert" hidden></p>
+          <div class="profile-edit-actions">
+            <button type="button" id="profile-edit-cancel">Batal</button>
+            <button type="submit"><i class="fa-solid fa-check" aria-hidden="true"></i> Simpan perubahan</button>
+          </div>
+        </form>
+      </dialog>
+
     </div>
 
     <!-- JavaScript -->
@@ -226,6 +270,7 @@
     <script src="../../javascript/components/journalModal.js"></script>
     <script src="../../javascript/utils/helpers.js"></script>
     <script src="../../javascript/pages/profile/navbar.js"></script>
+    <script src="../../javascript/pages/profile/profile-data.js"></script>
     <script src="../../javascript/pages/profile/profile.js"></script>
   </body>
 </html>

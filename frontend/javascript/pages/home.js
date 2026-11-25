@@ -1,10 +1,10 @@
 // State Halaman
-let heroMovies = [];        // Daftar film untuk banner (hero)
-let heroIndex = 0;          // Indeks film yang aktif di hero
-let currentPage = 1;         // Halaman TMDB yang sedang aktif
-let totalPages = 1;          // Total halaman tersedia
-let currentQuery = "";       // Kata kunci pencarian aktif
-let currentHeroId = null;    // ID film yang sedang tampil di hero
+let heroMovies = []; // Daftar film untuk banner (hero)
+let heroIndex = 0; // Indeks film yang aktif di hero
+let currentPage = 1; // Halaman TMDB yang sedang aktif
+let totalPages = 1; // Total halaman tersedia
+let currentQuery = ""; // Kata kunci pencarian aktif
+let currentHeroId = null; // ID film yang sedang tampil di hero
 
 // Elemen DOM
 const grid = document.getElementById("movie-grid");
@@ -24,14 +24,14 @@ const btnNext = document.getElementById("btn-next");
 
 // ===== RENDER GRID FILM =====
 function showGrid(movies, append = false) {
-  const list = movies.filter(m => m.poster_path);
+  const list = movies.filter((m) => m.poster_path);
 
   if (list.length === 0 && !append) {
     grid.innerHTML = `<p class="empty">Film tidak ditemukan.</p>`;
     return;
   }
 
-  const html = list.map(m => createCardHTML(m, "movie")).join("");
+  const html = list.map((m) => createCardHTML(m, "movie")).join("");
 
   if (append) {
     grid.insertAdjacentHTML("beforeend", html);
@@ -43,13 +43,13 @@ function showGrid(movies, append = false) {
 // Top 10 Weekly
 async function fetchTop10Weekly() {
   try {
-    const top10Grid = document.getElementById('top-10-grid');
+    const top10Grid = document.getElementById("top-10-grid");
     if (!top10Grid) return;
 
     // 1. Fetch data dari TMDB API
     const url = `${TMDB_CONFIG.BASE_URL}/trending/movie/week?api_key=${TMDB_CONFIG.API_KEY}`;
     const response = await fetch(url);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error status: ${response.status}`);
     }
@@ -57,7 +57,7 @@ async function fetchTop10Weekly() {
     const data = await response.json();
     const top10Movies = data.results.slice(0, 10);
 
-    top10Grid.innerHTML = ''; // Bersihkan container
+    top10Grid.innerHTML = ""; // Bersihkan container
 
     const parser = new DOMParser();
 
@@ -78,13 +78,33 @@ async function fetchTop10Weekly() {
 
     // 3. Pasang event listener untuk klik detail & bookmark
     attachCardListeners(top10Grid);
-
   } catch (error) {
-    console.error('Error fetching top 10 movies:', error);
+    console.error("Error fetching top 10 movies:", error);
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+async function initHome() {
+  // Cek dulu apakah user punya token valid
+  if (authService.isLoggedIn && authService.isLoggedIn()) {
+    try {
+      const watchlist = await watchlistService.getWatchlist();
+      // render watchlist
+    } catch (error) {
+      console.warn("Watchlist API error:", error.message);
+    }
+  } else {
+    // Mode Guest: Gunakan data lokal dari localStorage 'watchlist'
+    const localWatchlist = JSON.parse(
+      localStorage.getItem("watchlist") || "[]",
+    );
+    // render fallback lokal
+  }
+
+  // Pastikan Event Listener Tombol Enter/Submit dipasang DI LUAR try-catch API!
+  setupSearchAndEnterEvents();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
   fetchTop10Weekly();
 });
 // Inisialisasi event listener kartu film (buka detail & toggle bookmark)
@@ -102,31 +122,45 @@ async function showHero(index) {
   currentHeroId = movie.id;
 
   // 1. Tampilkan data awal yang sudah tersedia
-  heroEl.style.setProperty("--hero-bg", `url(${TMDB_CONFIG.IMG_BACKDROP + movie.backdrop_path})`);
+  heroEl.style.setProperty(
+    "--hero-bg",
+    `url(${TMDB_CONFIG.IMG_BACKDROP + movie.backdrop_path})`,
+  );
 
   heroEl.classList.remove("fade-transition");
-  void heroEl.offsetWidth; 
+  void heroEl.offsetWidth;
   heroEl.classList.add("fade-transition");
   // -----------------------------------------------------
 
   heroTitle.textContent = movie.title;
   heroTitle.style.cursor = "pointer";
-  heroTitle.onclick = () => location.href = getPageUrl(`detail.html?type=movie&id=${movie.id}`);
-  heroRating.textContent = movie.vote_average ? `${movie.vote_average.toFixed(1)}/10` : "-";
+  heroTitle.onclick = () =>
+    (location.href = getPageUrl(`detail.html?type=movie&id=${movie.id}`));
+  heroRating.textContent = movie.vote_average
+    ? `${movie.vote_average.toFixed(1)}/10`
+    : "-";
   heroDesc.textContent = movie.overview || "Sinopsis belum tersedia.";
   heroDetail.textContent = "";
-  updateHeroWatchlistButton();
+  if (typeof updateHeroWatchlistButton === "function") {
+    updateHeroWatchlistButton();
+  }
 
   // Ambil data tambahan (genre & durasi) dari endpoint detail
   try {
     const detail = await getJSON(`/movie/${movie.id}`);
     if (currentHeroId !== movie.id) return; // User sudah berganti slide, abaikan
 
-    const genres = (detail.genres || []).slice(0, 2).map(g => g.name).join(" | ");
+    const genres = (detail.genres || [])
+      .slice(0, 2)
+      .map((g) => g.name)
+      .join(" | ");
     const year = (movie.release_date || "").slice(0, 4);
     const runtime = formatRuntime(detail.runtime);
 
-    heroDetail.textContent = [genres, year, runtime].filter(Boolean).map(t => "| " + t).join(" ");
+    heroDetail.textContent = [genres, year, runtime]
+      .filter(Boolean)
+      .map((t) => "| " + t)
+      .join(" ");
   } catch (err) {
     console.error("Gagal memuat detail hero:", err);
   }
@@ -155,16 +189,23 @@ btnHeroWatchlist.addEventListener("click", async () => {
   if (!currentHeroId) return;
 
   try {
-    const movie = heroMovies.find(item => item.id === currentHeroId);
+    const movie = heroMovies.find((item) => item.id === currentHeroId);
     const isAdded = await WatchlistService.toggle(movie, "movie");
     updateHeroWatchlistButton();
-    const cardBookmark = grid.querySelector(`[data-id="${currentHeroId}"] .bookmark`);
+    const cardBookmark = grid.querySelector(
+      `[data-id="${currentHeroId}"] .bookmark`,
+    );
     if (cardBookmark) cardBookmark.classList.toggle("active", isAdded);
   } catch (error) {
     console.error("Gagal mengubah watchlist:", error);
-    window.dispatchEvent(new CustomEvent("auth:required", {
-      detail: { message: "Silakan login terlebih dahulu untuk menyimpan film ke WatchList." }
-    }));
+    window.dispatchEvent(
+      new CustomEvent("auth:required", {
+        detail: {
+          message:
+            "Silakan login terlebih dahulu untuk menyimpan film ke WatchList.",
+        },
+      }),
+    );
   }
 });
 
@@ -178,7 +219,9 @@ btnTrailer.addEventListener("click", async () => {
 
   try {
     const data = await getJSON(`/movie/${currentHeroId}/videos`);
-    const trailer = (data.results || []).find(v => v.site === "YouTube" && v.type === "Trailer");
+    const trailer = (data.results || []).find(
+      (v) => v.site === "YouTube" && v.type === "Trailer",
+    );
     if (trailer) {
       window.open(`https://www.youtube.com/watch?v=${trailer.key}`, "_blank");
     } else {
@@ -191,8 +234,19 @@ btnTrailer.addEventListener("click", async () => {
 });
 
 // ===== PENCARIAN & PAGINASI =====
-searchInput.addEventListener("keydown", (e) => {
+function toggleBrowseSections(show) {
+  const top10Section = document
+    .getElementById("top-10-grid")
+    ?.closest("section");
+  if (heroEl) heroEl.style.display = show ? "" : "none";
+  if (top10Section) top10Section.style.display = show ? "" : "none";
+  if (show) startAutoSlide();
+  else stopAutoSlide();
+}
+
+searchInput.addEventListener("keydown", async (e) => {
   if (e.key !== "Enter") return;
+  e.preventDefault();
 
   const query = searchInput.value.trim();
   if (query === "") {
@@ -201,8 +255,9 @@ searchInput.addEventListener("keydown", (e) => {
   }
 
   currentQuery = query;
+  toggleBrowseSections(false);
   sectionTitle.textContent = `Hasil pencarian: "${query}"`;
-  loadPage(1);
+  await loadPage(1);
 });
 
 btnMore.addEventListener("click", () => loadPage(currentPage + 1));
@@ -214,7 +269,10 @@ async function loadPage(page = 1) {
   try {
     let data;
     if (currentQuery) {
-      data = await getJSON("/search/movie", `&query=${encodeURIComponent(currentQuery)}&page=${page}`);
+      data = await getJSON(
+        "/search/movie",
+        `&query=${encodeURIComponent(currentQuery)}&page=${page}`,
+      );
     } else {
       data = await getJSON("/movie/popular", `&page=${page}`);
     }
@@ -224,16 +282,34 @@ async function loadPage(page = 1) {
     showGrid(data.results, page > 1);
     btnMore.hidden = currentPage >= totalPages;
 
+    if (page === 1 && currentQuery) {
+      renderSearchStatus(
+        sectionTitle,
+        currentQuery,
+        data.results,
+        "movie",
+        title => {
+          searchInput.value = title;
+          currentQuery = title;
+          sectionTitle.textContent = `Hasil pencarian: "${title}"`;
+          loadPage(1);
+        },
+      );
+    }
+
     // Isi banner hero hanya saat memuat daftar populer awal
     if (page === 1 && !currentQuery) {
-      heroMovies = (data.results || []).filter(m => m.backdrop_path).slice(0, 5);
+      heroMovies = (data.results || [])
+        .filter((m) => m.backdrop_path)
+        .slice(0, 5);
       if (heroMovies.length) showHero(0);
     }
   } catch (err) {
     console.error(err);
     if (page === 1) {
       heroTitle.textContent = "Gagal memuat data";
-      heroDesc.textContent = "Periksa koneksi internet kamu atau konfigurasi API key.";
+      heroDesc.textContent =
+        "Periksa koneksi internet kamu atau konfigurasi API key.";
       grid.innerHTML = `<p class="empty">${err.message}</p>`;
     }
   }
@@ -257,13 +333,13 @@ function loadPopular() {
 
 // 1. Deklarasikan variabel interval timer di tingkat global/scope fungsi hero
 let autoSlideInterval = null;
-const SLIDE_DELAY = 3000; 
+const SLIDE_DELAY = 3000;
 
 // 2. Fungsi untuk berpindah ke slide/film berikutnya
 function nextSlide() {
   // Panggil fungsi perubahan slide ke kanan yang sudah ada di home.js kamu
   // Contoh: jika tombol next dipicu dengan event click:
-  const btnNext = document.getElementById('btn-next');
+  const btnNext = document.getElementById("btn-next");
   if (btnNext) {
     btnNext.click();
   }
@@ -285,14 +361,14 @@ function stopAutoSlide() {
 }
 
 // 5. Jalankan timer saat halaman dan data Hero selesai dimuat
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   // Panggil startAutoSlide setelah data film hero berhasil di-fetch
   startAutoSlide();
   // (UX ENHANCEMENT) Hentikan auto slide saat mouse hover di area hero,
   // lalu jalankan lagi saat kursor keluar (agar user nyaman membaca deskripsi/klik trailer)
-  const heroSection = document.getElementById('hero');
+  const heroSection = document.getElementById("hero");
   if (heroSection) {
-    heroSection.addEventListener('mouseenter', stopAutoSlide);
-    heroSection.addEventListener('mouseleave', startAutoSlide);
+    heroSection.addEventListener("mouseenter", stopAutoSlide);
+    heroSection.addEventListener("mouseleave", startAutoSlide);
   }
 });

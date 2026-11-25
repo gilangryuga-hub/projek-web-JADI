@@ -13,10 +13,26 @@ function initProfilePage() {
 
   const emptyState = message => `<p class="profile-empty">${escapeHtml(message)}</p>`;
   const posterUrl = path => path ? `${PROFILE_IMAGE_BASE}${path}` : "";
-  const avatarUrl = path => {
-    if (!path) return "";
-    return path.startsWith("http") ? path : `${API_CONFIG.DJANGO_BASE_URL}${path}`;
-  };
+  function renderShowMore(containerId, url, label, total) {
+    const container = document.getElementById(containerId);
+    const anchor = container.closest(".diary-table-wrap") || container;
+    const linkId = `${containerId}-show-more`;
+    let link = document.getElementById(linkId);
+
+    if (total <= 3) {
+      link?.remove();
+      return;
+    }
+
+    if (!link) {
+      link = document.createElement("a");
+      link.id = linkId;
+      link.className = "profile-show-more";
+    }
+    link.href = url;
+    link.textContent = label;
+    anchor.insertAdjacentElement("afterend", link);
+  }
   const formatDate = value => {
     if (!value) return "-";
     return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" })
@@ -28,6 +44,21 @@ function initProfilePage() {
   };
   let profileJournals = [];
   let profileWatchlist = [];
+  let profileUser = null;
+  const editButton = document.querySelector(".profile-edit-btn");
+  const editDialog = document.getElementById("profile-edit-dialog");
+  const editForm = document.getElementById("profile-edit-form");
+  const editMessage = document.getElementById("profile-edit-message");
+  const avatarInput = document.getElementById("profile-edit-avatar");
+  const avatarPreview = document.getElementById("profile-edit-avatar-preview");
+
+  function updateAvatarPreview() {
+    renderProfileAvatar(
+      avatarPreview,
+      profileUser?.username || "Pengguna",
+      avatarInput.value.trim()
+    );
+  }
 
   function matchesRating(item, value) {
     if (value === "all") return true;
@@ -48,8 +79,9 @@ function initProfilePage() {
     if (sort === "rating") films.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
     document.getElementById("films-count").textContent = `${films.length} film${films.length === 1 ? "" : "s"}`;
     document.getElementById("films-grid").innerHTML = films.length
-      ? films.map(item => `<a class="film-tile" href="${getPageUrl(`detail.html?type=${item.media_type}&id=${item.tmdb_id}`)}"><div class="film-tile-poster">${item.poster_path ? `<img src="${posterUrl(item.poster_path)}" alt="Poster ${escapeHtml(item.title)}">` : `<i class="fa-solid fa-film"></i>`}<span class="film-tile-overlay">${item.source === "watchlist" ? "Watchlist" : "Watched"}</span></div><strong>${escapeHtml(item.title)}</strong><span>${item.rating ? stars(item.rating) : "Belum diberi rating"}</span></a>`).join("")
+      ? films.slice(0, 3).map(item => `<a class="film-tile" href="${getPageUrl(`detail.html?type=${item.media_type}&id=${item.tmdb_id}`)}"><div class="film-tile-poster">${item.poster_path ? `<img src="${posterUrl(item.poster_path)}" alt="Poster ${escapeHtml(item.title)}">` : `<i class="fa-solid fa-film"></i>`}<span class="film-tile-overlay">${item.source === "watchlist" ? "Watchlist" : "Watched"}</span></div><strong>${escapeHtml(item.title)}</strong><span>${item.rating ? stars(item.rating) : "Belum diberi rating"}</span></a>`).join("")
       : emptyState(status === "watchlist" ? "Watchlist masih kosong." : "Belum ada film untuk filter ini.");
+    renderShowMore("films-grid", "films.html?status=all", "View all films", films.length);
   }
 
   function renderDiaryTable() {
@@ -60,8 +92,9 @@ function initProfilePage() {
     );
     document.getElementById("diary-count").textContent = `${entries.length} entr${entries.length === 1 ? "y" : "ies"}`;
     document.getElementById("diary-table-body").innerHTML = entries.length
-      ? entries.map(item => `<div class="diary-row" role="row"><div class="diary-date"><strong>${new Date(`${item.watched_date}T00:00:00`).getDate()}</strong><span>${new Date(`${item.watched_date}T00:00:00`).toLocaleString("id-ID", { month: "short" }).toUpperCase()}</span><small>${new Date(`${item.watched_date}T00:00:00`).getFullYear()}</small></div><div class="diary-film"><strong>${escapeHtml(item.title)}</strong><span>${item.media_type === "tv" ? "Series" : "Film"}${item.notes ? " • Review tersedia" : ""}</span></div><div>${stars(item.rating)}</div><div class="diary-activity">${item.is_liked ? '<i class="fa-solid fa-heart is-liked" title="Liked"></i>' : '<i class="fa-regular fa-heart" title="Not liked"></i>'}${item.is_rewatch ? '<span class="rewatch-badge">Rewatch</span>' : ""}</div></div>`).join("")
+      ? entries.slice(0, 3).map(item => `<div class="diary-row" role="row"><div class="diary-date"><strong>${new Date(`${item.watched_date}T00:00:00`).getDate()}</strong><span>${new Date(`${item.watched_date}T00:00:00`).toLocaleString("id-ID", { month: "short" }).toUpperCase()}</span><small>${new Date(`${item.watched_date}T00:00:00`).getFullYear()}</small></div><div class="diary-film"><strong>${escapeHtml(item.title)}</strong><span>${item.media_type === "tv" ? "Series" : "Film"}${item.notes ? " • Review tersedia" : ""}</span></div><div>${stars(item.rating)}</div><div class="diary-activity">${item.is_liked ? '<i class="fa-solid fa-heart is-liked" title="Liked"></i>' : '<i class="fa-regular fa-heart" title="Not liked"></i>'}${item.is_rewatch ? '<span class="rewatch-badge">Rewatch</span>' : ""}</div></div>`).join("")
       : emptyState("Belum ada diary untuk filter ini.");
+    renderShowMore("diary-table-body", "diary.html", "View all diary entries", entries.length);
   }
 
   function setupCollectionFilters() {
@@ -80,42 +113,40 @@ function initProfilePage() {
 
   function renderProfile(user, journals, watchlist) {
     const username = user.username || "Pengguna";
-    const initials = username.slice(0, 2).toUpperCase();
-    const profile = user.profile || {};
     const currentYear = new Date().getFullYear();
     const liked = journals.filter(item => item.is_liked);
     profileJournals = journals;
     profileWatchlist = watchlist;
     const uniqueFilms = new Set(journals.map(item => `${item.media_type}:${item.tmdb_id}`));
+    profileUser = user;
+    if (editButton) editButton.disabled = false;
 
-    const profileAvatar = document.getElementById("profile-avatar");
-    profileAvatar.textContent = profile.avatar_url ? "" : initials;
-    profileAvatar.style.backgroundImage = profile.avatar_url
-      ? `url("${avatarUrl(profile.avatar_url)}")`
-      : "";
+    renderProfileAvatar(document.getElementById("profile-avatar"), username, user.avatar_url);
+    initProfileShell({ user });
     document.getElementById("profile-title").textContent = username;
     document.getElementById("profile-handle").textContent = `@${username}`;
-    document.querySelector(".profile-bio").textContent = profile.bio || "Belum ada bio.";
-    document.querySelector(".top-bar .user-avatar").textContent = initials;
-    document.querySelector(".sidebar-footer .user-avatar").textContent = initials;
-    document.querySelector(".sidebar-footer .profile-name").textContent = username;
+    document.querySelector(".profile-bio").textContent = user.bio?.trim() || "Belum ada bio.";
     document.getElementById("stat-films").textContent = uniqueFilms.size;
     document.getElementById("stat-year").textContent = journals.filter(item => String(item.watched_date || "").startsWith(String(currentYear))).length;
 
-    const favorites = liked.slice(0, 4);
+    const favorites = liked.slice(0, 3);
     document.getElementById("favorite-grid").innerHTML = favorites.length
       ? favorites.map(item => `<a class="poster-card" href="${getPageUrl(`detail.html?type=${item.media_type}&id=${item.tmdb_id}`)}"><img src="${posterUrl(item.poster_path)}" alt="Poster film ${escapeHtml(item.title)}"><span>${escapeHtml(item.title)}</span></a>`).join("")
       : emptyState("Belum ada film favorit. Tandai film sebagai disukai dari jurnal.");
+    renderShowMore("favorite-grid", "likes.html", "View all favorites", liked.length);
 
-    const recent = journals.slice(0, 5);
+    const recent = journals.slice(0, 3);
     document.getElementById("activity-list").innerHTML = recent.length
       ? recent.map(item => `<div class="activity-card"><div class="activity-icon ${item.is_liked ? "activity-icon--green" : ""}"><i class="fa-solid fa-${item.is_liked ? "heart" : "eye"}"></i></div><div><strong>${item.is_liked ? "Liked" : "Watched"} <em>${escapeHtml(item.title)}</em></strong><span>${formatDate(item.watched_date)}</span></div>${stars(item.rating)}</div>`).join("")
       : emptyState("Belum ada aktivitas.");
+    renderShowMore("activity-list", "diary.html", "View all activity", journals.length);
 
-    const reviews = journals.filter(item => item.notes).slice(0, 5);
+    const allReviews = journals.filter(item => item.notes);
+    const reviews = allReviews.slice(0, 3);
     document.getElementById("review-list").innerHTML = reviews.length
       ? reviews.map(item => `<article class="review-card"><div class="review-poster">${item.poster_path ? `<img src="${posterUrl(item.poster_path)}" alt="Poster ${escapeHtml(item.title)}">` : ""}</div><div class="review-body"><div class="review-meta"><span>${escapeHtml(item.title)}</span><span>${formatDate(item.watched_date)}</span></div>${stars(item.rating)}<p>${escapeHtml(item.notes)}</p><div class="review-footer"><span><i class="fa-solid fa-heart"></i> ${item.is_liked ? "Liked" : "Not liked"}</span></div></div></article>`).join("")
       : emptyState("Belum ada review. Isi catatan saat menambahkan diary.");
+    renderShowMore("review-list", "reviews.html", "View all reviews", allReviews.length);
 
     document.getElementById("diary-list").innerHTML = recent.length
       ? recent.slice(0, 3).map(item => {
@@ -123,6 +154,7 @@ function initProfilePage() {
         return `<div class="diary-entry"><div class="date-badge"><strong>${String(date.getDate()).padStart(2, "0")}</strong><span>${date.toLocaleString("id-ID", { month: "short" }).toUpperCase()}</span></div><div><strong>${escapeHtml(item.title)}</strong><span>${formatDate(item.watched_date)} • ${item.rating} stars</span></div></div>`;
       }).join("")
       : emptyState("Diary masih kosong.");
+    renderShowMore("diary-list", "diary.html", "View all diary entries", journals.length);
 
     const counts = [5, 4, 3, 2, 1].map(rating => ({
       rating,
@@ -139,87 +171,42 @@ function initProfilePage() {
     renderDiaryTable();
   }
 
-  function setupProfileEditor() {
-    const editButton = document.querySelector(".profile-edit-btn");
-    if (!editButton || document.getElementById("profile-edit-modal")) return;
+  editButton?.addEventListener("click", () => {
+    if (!profileUser) return;
+    editForm.elements.bio.value = profileUser.bio || "";
+    editForm.elements.avatar_url.value = profileUser.avatar_url || "";
+    updateAvatarPreview();
+    editMessage.hidden = true;
+    editDialog.showModal();
+  });
 
-    const modal = document.createElement("div");
-    modal.id = "profile-edit-modal";
-    modal.className = "profile-edit-modal";
-    modal.hidden = true;
-    modal.innerHTML = `
-      <div class="profile-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-edit-title">
-        <button type="button" class="profile-edit-close" aria-label="Tutup">&times;</button>
-        <h2 id="profile-edit-title">Edit Profile</h2>
-        <form class="profile-edit-form">
-          <label>Bio<textarea name="bio" maxlength="500" rows="4" placeholder="Ceritakan sedikit tentang kamu"></textarea></label>
-          <label>Foto profile<input name="avatar" type="file" accept="image/jpeg,image/png,image/webp"></label>
-          <p class="profile-edit-hint">JPG, PNG, atau WebP. Maksimal 5 MB.</p>
-          <p class="profile-edit-error" role="alert" hidden></p>
-          <div class="profile-edit-actions">
-            <button type="button" class="profile-edit-cancel">Batal</button>
-            <button type="submit" class="profile-edit-save">Simpan</button>
-          </div>
-        </form>
-      </div>`;
-    document.body.appendChild(modal);
+  const closeEditDialog = () => {
+    editDialog.close();
+  };
+  document.getElementById("profile-edit-cancel")?.addEventListener("click", closeEditDialog);
+  document.getElementById("profile-edit-close")?.addEventListener("click", closeEditDialog);
+  avatarInput?.addEventListener("input", updateAvatarPreview);
 
-    const form = modal.querySelector("form");
-    const bioInput = form.querySelector("[name=bio]");
-    const avatarInput = form.querySelector("[name=avatar]");
-    const error = modal.querySelector(".profile-edit-error");
-    const close = () => {
-      modal.hidden = true;
-      document.body.style.overflow = "";
-    };
+  editForm?.addEventListener("submit", async event => {
+    event.preventDefault();
+    const saveButton = editForm.querySelector('[type="submit"]');
+    saveButton.disabled = true;
+    editMessage.hidden = true;
 
-    editButton.disabled = false;
-    editButton.addEventListener("click", () => {
-      const profile = window.currentProfileUser?.profile || {};
-      bioInput.value = profile.bio || document.querySelector(".profile-bio").textContent;
-      avatarInput.value = "";
-      error.hidden = true;
-      modal.hidden = false;
-      document.body.style.overflow = "hidden";
-      bioInput.focus();
-    });
-    modal.querySelector(".profile-edit-close").addEventListener("click", close);
-    modal.querySelector(".profile-edit-cancel").addEventListener("click", close);
-    modal.addEventListener("click", event => {
-      if (event.target === modal) close();
-    });
-    form.addEventListener("submit", async event => {
-      event.preventDefault();
-      const file = avatarInput.files[0];
-      if (file && file.size > 5 * 1024 * 1024) {
-        error.textContent = "Ukuran foto maksimal 5 MB.";
-        error.hidden = false;
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("bio", bioInput.value.trim());
-      if (file) formData.append("avatar", file);
-
-      const saveButton = form.querySelector(".profile-edit-save");
-      saveButton.disabled = true;
-      error.hidden = true;
-      try {
-        const updatedUser = await apiRequest("/api/auth/me/", {
-          method: "PATCH",
-          body: formData
-        });
-        window.currentProfileUser = updatedUser;
-        renderProfile(updatedUser, profileJournals, profileWatchlist);
-        close();
-      } catch (requestError) {
-        error.textContent = requestError.message || "Profil gagal diperbarui.";
-        error.hidden = false;
-      } finally {
-        saveButton.disabled = false;
-      }
-    });
-  }
+    try {
+      const user = await AuthService.updateMe({
+        bio: editForm.elements.bio.value,
+        avatar_url: editForm.elements.avatar_url.value.trim()
+      });
+      renderProfile(user, profileJournals, profileWatchlist);
+      editDialog.close();
+    } catch (error) {
+      editMessage.textContent = error.message || "Profil gagal diperbarui.";
+      editMessage.hidden = false;
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
 
   async function load() {
     if (!AuthService.isAuthenticated()) {
@@ -236,7 +223,6 @@ function initProfilePage() {
         WatchlistService.getAll()
       ]);
       renderProfile(user, journals, watchlist);
-      window.currentProfileUser = user;
       status.hidden = true;
       content.hidden = false;
     } catch (error) {
@@ -246,7 +232,6 @@ function initProfilePage() {
 
   renderEmptyCollections();
   setupCollectionFilters();
-  setupProfileEditor();
   load();
   window.addEventListener("auth:changed", load);
   window.addEventListener("auth:login", load);

@@ -197,6 +197,7 @@
 /* ===== DAFTAR FILM HOME ===== */
 .movies {
   padding: 24px 48px 48px;
+  padding-top: 100px;
 }
 
 .section-title {

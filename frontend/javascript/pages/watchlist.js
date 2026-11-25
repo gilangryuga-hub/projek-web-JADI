@@ -3,6 +3,7 @@
  */
 let movies = [];
 let series = [];
+let watchlistLoadVersion = 0;
 
 const container = document.getElementById("watch-content");
 const searchInput = document.getElementById("search-input");
@@ -79,34 +80,49 @@ if (searchInput) {
  * @returns {Promise<void>}
  */
 async function initWatchlist() {
+  const loadVersion = ++watchlistLoadVersion;
   container.innerHTML = `<p class="empty">Loading...</p>`;
+  if (!AuthService.isAuthenticated()) {
+    renderGuestWatchlist();
+    return;
+  }
+
   try {
     const items = await WatchlistService.getAll();
+    if (loadVersion !== watchlistLoadVersion || !AuthService.isAuthenticated()) {
+      return;
+    }
     movies = items.filter(item => item.media_type === "movie");
     series = items.filter(item => item.media_type === "tv");
     renderWatchlist();
   } catch (error) {
-    console.error(error);
-    container.innerHTML = `
-      <div class="watchlist-empty-auth">
-        <i class="fa-regular fa-bookmark empty-auth-icon"></i>
-        <h2>WatchList Perlu Akses Akun</h2>
-        <p>Masuk atau buat akun baru untuk mulai menyimpan dan melihat daftar tontonan kamu.</p>
-        <button type="button" class="btn-primary" id="btn-watchlist-login">
-          <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk / Daftar
-        </button>
-      </div>`;
-    const btn = document.getElementById("btn-watchlist-login");
-    if (btn) {
-      btn.addEventListener("click", () => {
-        if (window.AuthModal) {
-          window.AuthModal.open(false, "Silakan login untuk melihat daftar WatchList kamu.");
-        }
-      });
+    if (loadVersion !== watchlistLoadVersion) {
+      return;
     }
-    window.dispatchEvent(new CustomEvent("auth:required", {
-      detail: { message: "Silakan login terlebih dahulu untuk melihat daftar WatchList kamu." }
-    }));
+    console.error(error);
+    renderGuestWatchlist();
+  }
+}
+
+function renderGuestWatchlist() {
+  movies = [];
+  series = [];
+  container.innerHTML = `
+    <div class="watchlist-empty-auth">
+      <i class="fa-regular fa-bookmark empty-auth-icon"></i>
+      <h2>WatchList Perlu Akses Akun</h2>
+      <p>Masuk atau buat akun baru untuk mulai menyimpan dan melihat daftar tontonan kamu.</p>
+      <button type="button" class="btn-primary" id="btn-watchlist-login">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk / Daftar
+      </button>
+    </div>`;
+  const btn = document.getElementById("btn-watchlist-login");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      if (window.AuthModal) {
+        window.AuthModal.open(false, "Silakan login untuk melihat daftar WatchList kamu.");
+      }
+    });
   }
 }
 
